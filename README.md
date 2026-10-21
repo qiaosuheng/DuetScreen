@@ -128,6 +128,11 @@ Training writes the checkpoint to `runs/full_seed<ID>/seed<ID>/best_nucleotide_v
 Prediction loads it with `--model` / `MODEL=`. No separate weight download is
 needed to start training.
 
+For review, a separate asset archive (`DuetScreen_Docker_Assets.zip`) can be unpacked into `assets/`.
+It adds `checkpoints/seed42..51/`, `protein_seg_cache_35m.pkl`, `mini_train_cache.pkl` and
+`smoke.fasta`, which are used by `docker/run_predict.sh` and the training smoke check. This archive
+is not part of the repository.
+
 ## Environment
 
 Two paths use the same code. The Docker path pins the CUDA/torch/Mamba combination and is the
