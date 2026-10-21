@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use DuetScreen, please cite the manuscript and the Zenodo record for data and model assets."
+title: DuetScreen
+version: 1.0.0
+date-released: 2026-10-21
+license: MIT
+type: software
+authors:
+  - name: "DuetScreen authors"
+repository-code: "https://github.com/ORG/REPO"
+abstract: >-
+  DuetScreen is a dual-space nucleotide and protein screening model for DNA sequences.
+  It combines a partially adapted Nucleotide Transformer v3 encoder with a frozen ESM2-35M
+  protein representation and a dual-stream downstream network.
+keywords:
+  - biosecurity
+  - DNA screening
+  - nucleotide transformer
+  - protein language model
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.XXXXXXX"
+    description: "Data and model assets (replace after publication)"
