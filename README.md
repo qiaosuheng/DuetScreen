@@ -65,8 +65,7 @@ scores against the recorded reference → one-step training check → PASS/FAIL)
 NO_GPU=1 ./run_quickstart.sh   # CPU prediction only (training skipped)
 ```
 
-Arrange the working folder so the script finds everything (it also unzips the
-assets automatically if `DuetScreen_Docker_Assets.zip` sits next to it):
+Arrange the working folder so the script finds the encoder and your checkpoint:
 
 ```
 release/
@@ -112,7 +111,7 @@ docker build -t duetscreen-release:1.0 .
 #      protein_seg_cache_35m.pkl    shipped 16-segment cache (released record set)
 #      mini_train_cache.pkl         shipped (training smoke, 32 records)
 #      smoke.fasta                  shipped (8 prediction records)
-#      checkpoints/seed42..51/best_nucleotide_v3_mamba_model.pth
+#      checkpoints/my_run/best_nucleotide_v3_mamba_model.pth
 
 cd ..   # back to release/, so $PWD/assets works below
 
@@ -122,7 +121,7 @@ docker run --rm --gpus all --entrypoint python \
   -e DUETSCREEN_PROTEIN_SEG_CACHE=/assets/protein_seg_cache_35m.pkl \
   duetscreen-release:1.0 -m duetscreen.predict \
   --fasta /assets/smoke.fasta \
-  --model /assets/checkpoints/seed42/best_nucleotide_v3_mamba_model.pth \
+  --model /assets/checkpoints/my_run/best_nucleotide_v3_mamba_model.pth \
   --output-dir /out --threshold 0.5 --batch-size 4 \
   --ntv3-model /assets/NTv3_8M_pre
 

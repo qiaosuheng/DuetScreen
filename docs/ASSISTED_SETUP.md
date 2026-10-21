@@ -12,7 +12,7 @@ below are vendor-neutral — no particular product is required or endorsed.
 > 1. Check that Docker is installed and running, and that GPU containers work
 >    (`docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi`).
 > 2. Make sure the folder layout is `release/DuetScreen/` and `release/assets/`.
->    If `DuetScreen_Docker_Assets.zip` is present, unzip it into `assets/`.
+>    Put the NT-V3 encoder folder in `assets/NTv3_8M_pre`; the ESM2 cache is built automatically.
 > 3. Run `./run_quickstart.sh` (or `.\run_quickstart.ps1` on Windows) and show
 >    me the complete output.
 > 4. If any step fails, use the messages in `TROUBLESHOOTING.md` to diagnose it,
@@ -38,7 +38,7 @@ This reports agreement with the eight stored example scores and successful
 execution of the single-step training check. It does not retrain the published
 checkpoints or reproduce all benchmark results. The separate one-epoch check
 in `CHECKS.md` produced execution-check outputs that are not included among
-the released checkpoints.
+the checkpoint you trained.
 
 ## If the assistant gets stuck
 
