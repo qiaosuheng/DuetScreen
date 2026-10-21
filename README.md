@@ -277,9 +277,9 @@ heads, batch 16, at most 20 epochs with patience 5, maximum 2,048 bp input.
 
 ## Data and model assets
 
-The benchmark dataset is archived on Zenodo (DOI `DOI_PLACEHOLDER`). The ten released checkpoints,
-the NT-V3 weights and the protein-segment cache are attached to the GitHub Release `v1.0.0` as
-`DuetScreen_Model_Assets_v1.0.zip`. See `DATA_AND_WEIGHTS.md` for the file list, sizes and the
+The benchmark dataset and the model assets are archived on Zenodo (DOI `DOI_PLACEHOLDER`):
+`DuetScreen_Benchmark_v1.0.zip` and `DuetScreen_Model_Assets_v1.0.zip` (ten checkpoints, NT-V3
+weights and the protein-segment cache). See `DATA_AND_WEIGHTS.md` for the file list, sizes and the
 directory layout expected by the quickstart. This repository contains source code only; no weights
 or sequence data are committed here.
 

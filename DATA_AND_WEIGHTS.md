@@ -1,14 +1,15 @@
 # Data and model assets
 
-This repository contains source code only. The benchmark is archived on Zenodo; the released
-checkpoints and the protein-segment cache are attached to the GitHub Release.
+This repository contains source code only. The benchmark dataset and the released model assets are
+archived together on Zenodo; numerical source data for figures and tables accompany the journal
+submission.
 
 ## Where things live
 
 | Resource | Location | Size |
 |---|---|---|
-| Benchmark dataset | Zenodo, DOI `DOI_PLACEHOLDER` | 382 MB |
-| Released checkpoints, NT-V3 weights, protein cache, smoke inputs | GitHub Release `v1.0.0`, asset `DuetScreen_Model_Assets_v1.0.zip` | 1.8 GB |
+| Benchmark dataset | Zenodo, DOI `DOI_PLACEHOLDER`, `DuetScreen_Benchmark_v1.0.zip` | 382 MB |
+| Released checkpoints, NT-V3 weights, protein cache, smoke inputs | Zenodo, DOI `DOI_PLACEHOLDER`, `DuetScreen_Model_Assets_v1.0.zip` | 1.8 GB |
 | Numerical source data for figures and tables | Journal submission / Source Data archive | 29 MB |
 
 ## Layout after downloading the model assets
@@ -35,11 +36,11 @@ separately; it is not required for the quickstart, which uses the bundled smoke 
 
 ## Checksums
 
-- Model assets: per-file SHA-256 in `assets_manifest.json`.
+- Model assets: per-file SHA-256 in `assets_manifest.json`; archive hash in the Zenodo `SHA256SUMS.txt`.
 - Benchmark: `MANIFEST.json` inside the archive and `SHA256SUMS.txt` on the Zenodo record.
 
 ## Licence
 
 Code: MIT (`LICENSE`). Third-party components: see `THIRD_PARTY.md`.
-Benchmark: CC BY 4.0 for author-created curation and splits; upstream sequence sources retain their
-own terms.
+Dataset and trained checkpoints: CC BY 4.0 for author-created content; upstream sequence and model
+sources retain their own terms.
