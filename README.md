@@ -15,14 +15,20 @@ The model is intended for **biosecurity screening research**: flagging material
 derived from sequences of concern. It does not predict whether a sequence is
 expressed, viable or functional.
 
-## Contents
+## What is included
 
-```
-duetscreen/            model, encoder, data, trainer, protein cache, predict CLI
-configs/               released configuration snapshot
-assets_manifest.json   required third-party assets, versions and hashes
-Dockerfile             reproducible CPU/GPU environment (see notes inside)
-```
+- `duetscreen/`: model, encoder, data pipeline, training-view generator, protein cache, trainer and prediction CLI.
+- `configs/duetscreen_release.json`: the configuration used for the reported runs.
+- `docker/`: container entry points for training, smoke training and prediction.
+- `tools/`: cache-coverage and result-verification utilities.
+- `Dockerfile`, `requirements.txt`: pinned environment.
+- `docs/`: setup and troubleshooting notes.
+
+## What is not tracked in git
+
+- Benchmark sequences (Zenodo, DOI below).
+- Encoder weights (Hugging Face).
+- Run outputs: `runs/`, checkpoints, protein caches and logs are created locally.
 
 ## Project layout after setup
 
@@ -65,6 +71,12 @@ state is required. `runs/` is created by the training script and is not tracked 
 The benchmark dataset is archived on Zenodo: **https://doi.org/10.5281/zenodo.23534656**
 (mixed pool, strict pool and the species/family holdout sets, `pos_`/`neg_` labels in the FASTA IDs).
 
+| Archive | Files to place under `data/` | Records |
+|---|---|---|
+| `mixed pool.zip` | `mixed/train.fasta`, `mixed/val.fasta`, `mixed/test.fasta` | 13,430 / 1,679 / 1,679 |
+| `strict pool.zip` | `strict/train.fasta`, `strict/val.fasta`, `strict/test.fasta` | 6,446 / 805 / 805 |
+| `holdout pool.zip` | `holdout/generalization_species.fasta`, `holdout/generalization_family.fasta` | 1,164 / 817 |
+
 The training recipe writes the checkpoint to
 `runs/full_seed<ID>/seed<ID>/best_nucleotide_v3_mamba_model.pth`; prediction and the quickstart
 accept that path through `MODEL=` or `--model`. Training is stochastic, so a fresh run follows the
@@ -73,17 +85,43 @@ reference reached 0.8497 validation combined accuracy).
 
 Encoder weights are obtained from their upstream releases (see below).
 
-## Installation
+## Environment
+
+Two paths use the same code. The Docker path pins the CUDA/torch/Mamba combination and is the
+recommended route; the native path is for users who already have a matching toolchain.
+
+### Option A: Docker (recommended)
+
+```bash
+docker build -t duetscreen-release:1.0 .
+```
+
+The image is based on `pytorch/pytorch:2.8.0-cuda12.8-cudnn9-runtime` and builds the Mamba kernels
+during the image build (about 20 minutes once).
+
+### Option B: native Python
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
 pip install "torch==2.8.0" --index-url https://download.pytorch.org/whl/cu128
 pip install -r requirements.txt
+pip install causal-conv1d==1.5.3.post1 mamba-ssm==2.2.6.post3
 ```
 
-`mamba-ssm` and `causal-conv1d` provide the Mamba2 kernels. Prebuilt wheels exist
-for common CUDA/PyTorch combinations; otherwise they compile against the CUDA
-toolkit (the Dockerfile shows one working recipe).
+`mamba-ssm` and `causal-conv1d` compile against the CUDA toolkit; a matching `nvcc` is required if no
+prebuilt wheel fits your platform.
+
+### Tested versions
+
+| Component | Version |
+|---|---|
+| Python | 3.11 |
+| PyTorch | 2.8.0 (CUDA 12.8) |
+| CUDA runtime / driver | 12.8 / >= 570 |
+| mamba-ssm | 2.2.6.post3 |
+| causal-conv1d | 1.5.3.post1 |
+| transformers | 4.57.1 |
+| GPU memory | >= 8 GB for training |
 
 ## Quickstart
 
@@ -255,7 +293,7 @@ one-step `--smoke` check; the full recipe expects the complete split.
 |---|---|---|
 | NT-V3-Pre-8M | nucleotide encoder with trainable decoder and frozen backbone | `InstaDeepAI/NTv3_8M_pre` on Hugging Face, local folder |
 | ESM2-35M (`esm2_t12_35M_UR50D`) | frozen protein encoder | `facebook/esm2_t12_35M_UR50D` on Hugging Face |
-| trained checkpoint (optional) | required only for prediction/quickstart, produced by the training recipe | your own run |
+| trained checkpoint | needed for prediction/quickstart; produced by the training recipe | your own run |
 
 `assets_manifest.json` records the expected file names and SHA-256 values for the
 encoder folder and, when present, the protein cache and checkpoints of a local run.
@@ -263,8 +301,8 @@ encoder folder and, when present, the protein cache and checkpoints of a local r
 ## Build the protein cache
 
 The protein channel reads a cache of 16-segment ESM2-35M embeddings keyed by DNA
-sequence. A matching cache ships in the release assets; rebuild it only for new
-record sets (GPU recommended):
+sequence. `run_full_training.sh` builds it when absent; rebuild it explicitly only
+for new record sets (GPU recommended):
 
 ```bash
 python -m duetscreen.protein_cache \
@@ -318,20 +356,32 @@ The trainer writes `model_audit.json` (parameter budget: downstream ≤ 4M),
 (selected by validation combined accuracy, first maximum, 1-based epoch) and
 `complete.json`.
 
+## Configuration reference
+
+| Argument | Default | Meaning |
+|---|---|---|
+| `--records` | required | training cache (`variants_data.pkl`) built by `duetscreen.build_cache` |
+| `--output-dir` | required | run directory; receives checkpoint, audits and logs |
+| `--ntv3-model` | required | local folder of `NTv3_8M_pre` |
+| `--seed` | 42 | training seed |
+| `--epochs` | 20 | maximum epochs |
+| `--patience` | 5 | early-stopping patience on validation combined accuracy |
+| `--batch-size` | 16 | per-step batch size |
+| `--max-seq-len` | 2048 | maximum input length |
+| `--smoke` | off | one forward/backward step, for environment checks |
+
+The protein cache is passed through the environment variable
+`DUETSCREEN_PROTEIN_SEG_CACHE`; `run_full_training.sh` builds it automatically when absent.
+
+**Hardware and runtime.** One GPU with at least 8 GB of memory. Building the protein cache for the
+full split takes a few minutes on GPU; 20 training epochs take several hours depending on the GPU.
+
 ## Released configuration
 
 See `configs/duetscreen_release.json`: NT-V3-Pre-8M with 2,763,264 trainable
 decoder parameters, 2,987,761 downstream parameters (5,751,025 trainable in
 total), ESM2-35M frozen, 16 segments, width 480 -> 256, 4 segment-attention
 heads, batch 16, at most 20 epochs with patience 5, maximum 2,048 bp input.
-
-## Data and encoder assets
-
-The benchmark dataset is archived on Zenodo: **https://doi.org/10.5281/zenodo.23534656**.
-Encoder weights are downloaded from Hugging Face (`InstaDeepAI/NTv3_8M_pre`,
-`facebook/esm2_t12_35M_UR50D`). A checkpoint is produced by the training recipe above and consumed
-by prediction. See `DATA_AND_WEIGHTS.md` for the expected layout. This repository contains source
-code only; local data, encoder downloads and run outputs stay outside version control.
 
 ## Citation and license
 
