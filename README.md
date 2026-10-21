@@ -15,6 +15,22 @@ The model is intended for **biosecurity screening research**: flagging material
 derived from sequences of concern. It does not predict whether a sequence is
 expressed, viable or functional.
 
+## Table of contents
+
+1. [What is included](#what-is-included)
+2. [Project layout after setup](#project-layout-after-setup)
+3. [Data availability](#data-availability)
+4. [Model weights](#model-weights)
+5. [Environment](#environment)
+6. [Quickstart](#quickstart)
+7. [Training from the public dataset](#full-retraining-from-the-public-dataset)
+8. [Prediction](#predict)
+9. [Training](#train)
+10. [Output files](#output-files)
+11. [Configuration reference](#configuration-reference)
+12. [FAQ](#faq)
+13. [Citation and license](#citation-and-license)
+
 ## What is included
 
 - `duetscreen/`: model, encoder, data pipeline, training-view generator, protein cache, trainer and prediction CLI.
@@ -66,7 +82,7 @@ DuetScreen/
 The Docker image `duetscreen-release:1.0` is built once from the repository root; no other local
 state is required. `runs/` is created by the training script and is not tracked by git.
 
-## Dataset and model assets
+## Data availability
 
 The benchmark dataset is archived on Zenodo: **https://doi.org/10.5281/zenodo.23534656**
 (mixed pool, strict pool and the species/family holdout sets, `pos_`/`neg_` labels in the FASTA IDs).
@@ -77,6 +93,15 @@ The benchmark dataset is archived on Zenodo: **https://doi.org/10.5281/zenodo.23
 | `strict pool.zip` | `strict/train.fasta`, `strict/val.fasta`, `strict/test.fasta` | 6,446 / 805 / 805 |
 | `holdout pool.zip` | `holdout/generalization_species.fasta`, `holdout/generalization_family.fasta` | 1,164 / 817 |
 
+```bash
+mkdir -p data && cd data
+wget "https://zenodo.org/records/23534656/files/mixed%20pool.zip?download=1" -O mixed_pool.zip
+wget "https://zenodo.org/records/23534656/files/strict%20pool.zip?download=1" -O strict_pool.zip
+wget "https://zenodo.org/records/23534656/files/holdout%20pool.zip?download=1" -O holdout_pool.zip
+unzip -o mixed_pool.zip -d mixed && unzip -o strict_pool.zip -d strict && unzip -o holdout_pool.zip -d holdout
+cd ..
+```
+
 The training recipe writes the checkpoint to
 `runs/full_seed<ID>/seed<ID>/best_nucleotide_v3_mamba_model.pth`; prediction and the quickstart
 accept that path through `MODEL=` or `--model`. Training is stochastic, so a fresh run follows the
@@ -84,6 +109,12 @@ same recipe and performance range as the paper's seeds without being bit-identic
 reference reached 0.8497 validation combined accuracy).
 
 Encoder weights are obtained from their upstream releases (see below).
+
+## Model weights
+
+Training writes the checkpoint to `runs/full_seed<ID>/seed<ID>/best_nucleotide_v3_mamba_model.pth`.
+Prediction and the quickstart load it with `--model` / `MODEL=`. No separate weight download is
+needed to start training.
 
 ## Environment
 
@@ -251,6 +282,14 @@ supervised view generator (synonymous/codon-conservative and fragment-confusion
 views plus random-mutation contrastive negatives), the protein-cache builder,
 the trainer, and the audit checks. No paper checkpoint is required.
 
+| Stage | Command | Output |
+|---|---|---|
+| training views | `python -m duetscreen.build_cache --train-fasta ... --val-fasta ...` | `variants_data.pkl` |
+| protein cache | `python -m duetscreen.protein_cache --input ... --output ... --esm2 ...` | `protein_seg_cache.pkl` |
+| training | `python -m duetscreen.train --records ... --ntv3-model ...` | `best_nucleotide_v3_mamba_model.pth` |
+
+`run_full_training.sh` runs the three stages in order and skips a stage whose output already exists.
+
 ```bash
 # 1) dataset (mixed pool shown; strict pool and holdouts are separate archives)
 wget -O mixed_pool.zip "https://zenodo.org/records/23534656/files/mixed%20pool.zip?download=1"
@@ -328,6 +367,14 @@ PY
 Outputs per-record scores plus a metrics block when labels are present in the
 FASTA headers (`|label:1` / `|label:0`).
 
+| Argument | Required | Meaning |
+|---|---|---|
+| `--fasta` | yes | input FASTA |
+| `--model` | yes | checkpoint path |
+| `--threshold` | no | classification threshold (default 0.5) |
+| `--batch-size` | no | inference batch size (default 64) |
+| `--output-dir` | no | output directory |
+
 ## Train
 
 Training expects a pickle holding the prepared record list. Each record is a
@@ -356,6 +403,17 @@ The trainer writes `model_audit.json` (parameter budget: downstream ≤ 4M),
 (selected by validation combined accuracy, first maximum, 1-based epoch) and
 `complete.json`.
 
+## Output files
+
+| Stage | File | Description |
+|---|---|---|
+| training | `variants_data.pkl` | supervised views built from train/val |
+| training | `protein_seg_cache.pkl` | 16-segment ESM2-35M cache |
+| training | `best_nucleotide_v3_mamba_model.pth` | checkpoint selected by validation combined accuracy |
+| training | `nucleotide_v3_training_log.json` | per-epoch metrics and selection record |
+| training | `progress.jsonl`, `complete.json` | step log and completion record |
+| prediction | per-record scores | CSV written to `--output-dir`; metrics added when labels are present |
+
 ## Configuration reference
 
 | Argument | Default | Meaning |
@@ -382,6 +440,21 @@ See `configs/duetscreen_release.json`: NT-V3-Pre-8M with 2,763,264 trainable
 decoder parameters, 2,987,761 downstream parameters (5,751,025 trainable in
 total), ESM2-35M frozen, 16 segments, width 480 -> 256, 4 segment-attention
 heads, batch 16, at most 20 epochs with patience 5, maximum 2,048 bp input.
+
+## FAQ
+
+**CUDA out of memory.** Reduce `--batch-size` or `--max-seq-len`.
+
+**Mamba kernel fails to build.** Use the Docker image; it pins torch 2.8.0 with CUDA 12.8 and builds
+`mamba-ssm`/`causal-conv1d` once inside the image.
+
+**Hugging Face download is slow or requires a token.** Set `HF_ENDPOINT` to a mirror and run
+`huggingface-cli login` before downloading `InstaDeepAI/NTv3_8M_pre`.
+
+**Training stops early.** Early stopping uses validation combined accuracy with patience 5; see
+`nucleotide_v3_training_log.json` for the selected epoch.
+
+**Where is the dataset?** Zenodo DOI [10.5281/zenodo.23534656](https://doi.org/10.5281/zenodo.23534656).
 
 ## Citation and license
 
