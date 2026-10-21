@@ -17,19 +17,31 @@ expressed, viable or functional.
 
 ## Table of contents
 
-1. [What is included](#what-is-included)
-2. [Project layout after setup](#project-layout-after-setup)
-3. [Data availability](#data-availability)
-4. [Model weights](#model-weights)
-5. [Environment](#environment)
-6. [Quickstart](#quickstart)
-7. [Training from the public dataset](#full-retraining-from-the-public-dataset)
-8. [Prediction](#predict)
-9. [Training](#train)
-10. [Output files](#output-files)
-11. [Configuration reference](#configuration-reference)
-12. [FAQ](#faq)
-13. [Citation and license](#citation-and-license)
+- [Architecture](#architecture)
+- [What is included](#what-is-included)
+- [Project layout after setup](#project-layout-after-setup)
+- [Data availability](#data-availability)
+- [Model weights](#model-weights)
+- [Environment](#environment)
+- [Quickstart](#quickstart)
+- [Training from the public dataset](#full-retraining-from-the-public-dataset)
+- [Prediction](#predict)
+- [Training](#train)
+- [Output files](#output-files)
+- [Configuration reference](#configuration-reference)
+- [FAQ](#faq)
+- [Citation and license](#citation-and-license)
+
+## Architecture
+
+![DuetScreen architecture](docs/fig1bc.png)
+
+**b**, The NT-V3 encoder: the convolutional tower and transformer backbone are frozen, the
+deconvolutional tower is adapted for the screening task. **c**, Dual-space model: the nucleotide
+stream (adapted NT-V3, state-space and convolution branches, token fusion) and the protein stream
+(translation, frozen ESM2-35M, 16 segment summaries, segment self-attention, protein readout) are
+fused into a joint representation, followed by the classification head and the training-only
+contrastive projection.
 
 ## What is included
 
