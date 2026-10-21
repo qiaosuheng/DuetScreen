@@ -20,4 +20,4 @@ keywords:
 identifiers:
   - type: doi
     value: "10.5281/zenodo.23534656"
-    description: "Data and model assets (replace after publication)"
+    description: "Benchmark dataset (Zenodo)"

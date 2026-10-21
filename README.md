@@ -291,7 +291,7 @@ decoder parameters, 2,987,761 downstream parameters (5,751,025 trainable in
 total), ESM2-35M frozen, 16 segments, width 480 -> 256, 4 segment-attention
 heads, batch 16, at most 20 epochs with patience 5, maximum 2,048 bp input.
 
-## Data and model assets
+## Data and encoder assets
 
 The benchmark dataset is archived on Zenodo: **https://doi.org/10.5281/zenodo.23534656**.
 Encoder weights are downloaded from Hugging Face (`InstaDeepAI/NTv3_8M_pre`,
@@ -302,7 +302,7 @@ contains source code only; no weights or sequence data are committed here.
 ## Citation and license
 
 If you use DuetScreen, please cite the manuscript (citation details to be added upon publication)
-and the Zenodo record for the data and model assets.
+and the Zenodo dataset record.
 
 See `LICENSE` (MIT for this code) and `THIRD_PARTY.md` for the licences of the
 encoder weights and dependencies. Encoder weights retain their upstream
