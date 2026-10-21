@@ -1,16 +1,18 @@
 # Data and encoder assets
 
-This repository contains source code only. The benchmark dataset is published on Zenodo; encoder
-weights are downloaded from Hugging Face. A checkpoint is produced locally by the training recipe.
+This repository contains source code only. The benchmark dataset is published on Zenodo; the
+seed-42 checkpoint and the NT-V3 encoder are archived in a separate Zenodo record. New checkpoints
+are produced locally by the training recipe.
 
 ## Where things live
 
 | Resource | Location |
 |---|---|
 | Benchmark dataset (mixed, strict, holdouts) | Zenodo: https://doi.org/10.5281/zenodo.23534656 |
-| Nucleotide encoder | Hugging Face: `InstaDeepAI/NTv3_8M_pre` |
+| Seed-42 checkpoint and NT-V3 encoder | Zenodo: https://doi.org/10.5281/zenodo.23535423 |
+| Nucleotide encoder | `NTv3_8M_pre.zip` in the checkpoint record, or `InstaDeepAI/NTv3_8M_pre` on Hugging Face |
 | Protein encoder | Hugging Face: `facebook/esm2_t12_35M_UR50D` (downloaded automatically) |
-| Trained checkpoint | produced locally by `run_full_training.sh` |
+| Additional checkpoints | produced locally by `run_full_training.sh` |
 
 ## Dataset layout after download
 

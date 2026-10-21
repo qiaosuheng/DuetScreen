@@ -125,14 +125,17 @@ Encoder weights are obtained from their upstream releases (see below).
 
 ## Model weights
 
-Training writes the checkpoint to `runs/full_seed<ID>/seed<ID>/best_nucleotide_v3_mamba_model.pth`.
-Prediction loads it with `--model` / `MODEL=`. No separate weight download is
-needed to start training.
+The seed-42 checkpoint and the NT-V3 encoder are archived at
+**https://doi.org/10.5281/zenodo.23535423** (CC BY 4.0):
 
-For review, a separate asset archive (`DuetScreen_Docker_Assets.zip`) can be unpacked into `assets/`.
-It adds `checkpoints/seed42..51/`, `protein_seg_cache_35m.pkl`, `mini_train_cache.pkl` and
-`smoke.fasta`, which are used by `docker/run_predict.sh` and the training smoke check. This archive
-is not part of the repository.
+| File | Contents |
+|---|---|
+| `best_nucleotide_v3_mamba_model.pth` | seed-42 checkpoint (90 MB) |
+| `NTv3_8M_pre.zip` | NT-V3-Pre-8M encoder folder (29 MB) |
+
+Unpack `NTv3_8M_pre.zip` to `assets/NTv3_8M_pre` and pass the checkpoint to prediction with
+`--model`. Training writes its own checkpoint to `runs/full_seed<ID>/seed<ID>/`; the released
+seed-42 checkpoint can be used for prediction or as a starting point.
 
 ## Environment
 
