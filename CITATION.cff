@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use DuetScreen, please cite the manuscript and the Zenodo record for data and model assets."
+message: "If you use DuetScreen, please cite the manuscript and the Zenodo dataset record."
 title: DuetScreen
 version: 1.0.0
 date-released: 2026-10-21
