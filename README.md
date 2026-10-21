@@ -24,6 +24,7 @@ expressed, viable or functional.
 - [Model weights](#model-weights)
 - [Environment](#environment)
 - [Quickstart](#quickstart)
+- [Toy validation (1 epoch)](#toy-validation-1-epoch)
 - [Training from the public dataset](#full-retraining-from-the-public-dataset)
 - [Prediction](#predict)
 - [Training](#train)
@@ -225,6 +226,22 @@ Records without a stop-free ORF of at least 30 nt have no row; the model then
 falls back to a zero protein vector, which is the trained "no protein channel"
 condition. Rebuilding a cache with this module reproduces rows to fp16 precision
 (max |diff| 5e-4).
+
+## Toy validation (1 epoch)
+
+A fixed 120/40/40 subset with precomputed training views and protein cache is distributed
+separately (`DuetScreen_ToySubset.zip`, Zenodo DOI `TOY_DOI_PLACEHOLDER`). Unpack it into `toy/` so
+that `toy/data/` and `toy/cache/` exist, then run:
+
+```bash
+ASSETS=assets ./toy/run_toy.sh
+```
+
+The script trains for one epoch on the toy split and predicts the toy test set. On one GPU this
+takes about two minutes and exercises data loading, view construction, the protein cache, training,
+checkpoint writing and prediction end to end. Sanity values for seed 42 are validation accuracy
+0.8125 and validation AUROC 0.5876. This is a pipeline check, not a performance benchmark: the
+one-epoch test predictions are expected to be close to all-positive or all-negative.
 
 ## Full retraining from the public dataset
 

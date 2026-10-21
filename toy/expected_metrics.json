@@ -1,0 +1,8 @@
+{
+  "seed": 42,
+  "epochs": 1,
+  "validation_accuracy": 0.8125,
+  "validation_combined_accuracy": 0.8125,
+  "validation_auroc": 0.5876,
+  "note": "one-epoch sanity check, not a performance benchmark"
+}
