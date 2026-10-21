@@ -115,8 +115,8 @@ cd ..
 ```
 
 The training recipe writes the checkpoint to
-`runs/full_seed<ID>/seed<ID>/best_nucleotide_v3_mamba_model.pth`; prediction and the quickstart
-accept that path through `MODEL=` or `--model`. Training is stochastic, so a fresh run follows the
+`runs/full_seed<ID>/seed<ID>/best_nucleotide_v3_mamba_model.pth`; prediction accepts that path
+through `MODEL=` or `--model`. Training is stochastic, so a fresh run follows the
 same recipe and performance range as the paper's seeds without being bit-identical (the seed-42
 reference reached 0.8497 validation combined accuracy).
 
@@ -125,7 +125,7 @@ Encoder weights are obtained from their upstream releases (see below).
 ## Model weights
 
 Training writes the checkpoint to `runs/full_seed<ID>/seed<ID>/best_nucleotide_v3_mamba_model.pth`.
-Prediction and the quickstart load it with `--model` / `MODEL=`. No separate weight download is
+Prediction loads it with `--model` / `MODEL=`. No separate weight download is
 needed to start training.
 
 ## Environment
@@ -140,7 +140,8 @@ docker build -t duetscreen-release:1.0 .
 ```
 
 The image is based on `pytorch/pytorch:2.8.0-cuda12.8-cudnn9-runtime` and builds the Mamba kernels
-during the image build (about 20 minutes once).
+during the image build (about 20 minutes once). Only `Dockerfile` and `requirements.txt` are shipped;
+the image itself is built locally, and no prebuilt image or weight archive is distributed.
 
 ### Option B: native Python
 
@@ -168,105 +169,38 @@ prebuilt wheel fits your platform.
 
 ## Quickstart
 
-The quickstart is a self-check for the code path. It compares predictions against stored example
-scores, so it reads a checkpoint; pass the path produced by training through `MODEL=`.
-
-**One command runs the quickstart checks** (environment check → build → predict → compare
-scores against the recorded reference → one-step training check → PASS/FAIL):
+A four-step environment check: Docker, the NT-V3 encoder folder, the image build and the package
+import. It does not download data or weights and does not run a prediction.
 
 ```bash
-./run_quickstart.sh            # Linux / macOS / Git Bash
-.\run_quickstart.ps1           # Windows PowerShell
-NO_GPU=1 ./run_quickstart.sh   # CPU prediction only (training skipped)
+./run_quickstart.sh                          # Linux / macOS / Git Bash
+ASSETS=/path/to/assets ./run_quickstart.sh   # folder containing NTv3_8M_pre/
 ```
 
-Arrange the working folder so the script finds the encoder and your checkpoint:
+A Windows wrapper is included with the same options.
 
-```
-release/
-  DuetScreen/   <- this package
-  assets/       <- checkpoints/, NTv3_8M_pre/, protein_seg_cache_35m.pkl, ...
-```
+The script builds `duetscreen-release:1.0` from the included `Dockerfile` when the image is absent,
+then checks that `torch` and `duetscreen` import inside the container. A ready environment ends with
+`READY`.
 
-The quickstart compares predictions with the eight stored example scores and
-runs a single training-step functionality check. It does not retrain the model; prediction uses the checkpoint you provide. A separate one-epoch execution check was also completed
-during release validation; see `CHECKS.md`. Longer training is separate from
-the quickstart, and the data archive is supplied separately from this code.
-
-Success ends with `ALL CHECKS PASSED` when the executed checks pass. The score
-comparison uses a tolerance of 0.002 against `tools/expected_smoke.json`; the
-recorded maximum difference on the release host was 4.5e-9. For individual
-steps, follow the instructions below; see
-`TROUBLESHOOTING.md` for common failures. If you use an AI coding assistant, it
-can walk you through this README — a ready-to-paste prompt is in
-docs/ASSISTED_SETUP.md.
-
-`CHECKS.md` distinguishes the checks actually executed from the longer
-training instructions provided here.
-
-**Prerequisites**: Docker with GPU support (`--gpus all` requires an NVIDIA
-driver and the NVIDIA Container Toolkit), ~20 GB free disk, internet access for
-the first build and for the ESM2 download. All commands are run from the folder
-that contains `assets/` and the unpacked package:
+**Prerequisites**: Docker with GPU support (`--gpus all` requires an NVIDIA driver and the NVIDIA
+Container Toolkit), ~20 GB free disk, internet access for the first build and for the ESM2 download.
 
 ```
 release/
   DuetScreen/          <- this package (docker build here)
-  assets/              <- NTv3_8M_pre/ plus your trained checkpoint
+  assets/
+    NTv3_8M_pre/       <- Hugging Face download
 ```
 
 ```bash
 cd DuetScreen
-# 1) build (≈20 min; compiles the Mamba kernels once)
-docker build -t duetscreen-release:1.0 .
-
-# 2) assets (once, from the release folder)
-#    assets/
-#      NTv3_8M_pre/                  NT-V3-Pre-8M checkpoint folder
-#      protein_seg_cache_35m.pkl    shipped 16-segment cache (released record set)
-#      mini_train_cache.pkl         shipped (training smoke, 32 records)
-#      smoke.fasta                  shipped (8 prediction records)
-#      checkpoints/my_run/best_nucleotide_v3_mamba_model.pth
-
-cd ..   # back to release/, so $PWD/assets works below
-
-# 3) predict (override the training entrypoint)
-docker run --rm --gpus all --entrypoint python \
-  -v "$PWD/assets:/assets:ro" -v "$PWD/out:/out" \
-  -e DUETSCREEN_PROTEIN_SEG_CACHE=/assets/protein_seg_cache_35m.pkl \
-  duetscreen-release:1.0 -m duetscreen.predict \
-  --fasta /assets/smoke.fasta \
-  --model /assets/checkpoints/my_run/best_nucleotide_v3_mamba_model.pth \
-  --output-dir /out --threshold 0.5 --batch-size 4 \
-  --ntv3-model /assets/NTv3_8M_pre
-
-# 4) training sanity check (one forward/backward step)
-docker run --rm --gpus all \
-  -v "$PWD/assets:/assets:ro" -v "$PWD/work:/work" \
-  -e DUETSCREEN_PROTEIN_SEG_CACHE=/assets/protein_seg_cache_35m.pkl \
-  duetscreen-release:1.0 --smoke \
-  --records /assets/mini_train_cache.pkl --output-dir /work/smoke \
-  --ntv3-model /assets/NTv3_8M_pre
-
-# 5) full training (prepared cache; 20 epochs, early stop patience 5)
-docker run --rm --gpus all \
-  -v "$PWD/assets:/assets:ro" -v "$PWD/work:/work" \
-  -e DUETSCREEN_PROTEIN_SEG_CACHE=/assets/protein_seg_cache_35m.pkl \
-  duetscreen-release:1.0 \
-  --records /work/records.pkl --output-dir /work/seed42 \
-  --ntv3-model /assets/NTv3_8M_pre --seed 42 \
-  --epochs 20 --patience 5 --batch-size 16 --max-seq-len 2048
+docker build -t duetscreen-release:1.0 .   # about 20 minutes; compiles the Mamba kernels once
 ```
 
-Convenience wrappers are in `docker/`. Training requires a GPU; prediction also
-runs on CPU (drop `--gpus all`; slower).
-
-The prediction CLI scores the first 2,048 bp of each record, as the released
-evaluation pipeline did. On the full test split the package reproduces the
-released metrics to the fourth decimal (ACC 0.8748, F1 0.7139, AUROC 0.9216 vs
-0.9217 reported); a handful of records differ by up to 0.03 from cross-GPU
-floating-point drift. Cohort-specific published numbers (species/family
-holdouts) use their own protocols — see `CHECKS.md` for the comparison scope.
+Training and prediction commands are documented below; the wrappers in `docker/` run the same steps
+inside the container. Only `Dockerfile` and `requirements.txt` are shipped; the image is built
+locally.
 
 **Scoring sequences outside the released record set**: the protein channel reads
 a cache keyed by exact DNA sequence. Build a cache for your own records first
@@ -284,8 +218,8 @@ docker run --rm --gpus all --entrypoint python \
 
 Records without a stop-free ORF of at least 30 nt have no row; the model then
 falls back to a zero protein vector, which is the trained "no protein channel"
-condition. Rebuilding a cache with this module reproduced the shipped rows to
-fp16 precision (max |diff| 5e-4).
+condition. Rebuilding a cache with this module reproduces rows to fp16 precision
+(max |diff| 5e-4).
 
 ## Full retraining from the public dataset
 
@@ -318,13 +252,13 @@ DATA=data/mixed ./run_full_training.sh
 SEED=43 EPOCHS=20 DATA=data/mixed ./run_full_training.sh
 ```
 
-The protein cache is rebuilt on the fly with `facebook/esm2_t12_35M_UR50D` when the shipped cache
-is absent, so the only assets needed are the dataset and the NT-V3 encoder folder. `ASSETS=` can
+The protein cache is rebuilt on the fly with `facebook/esm2_t12_35M_UR50D` when no cache is present,
+so the only assets needed are the dataset and the NT-V3 encoder folder. `ASSETS=` can
 point at any directory containing `NTv3_8M_pre/`.
 
 The script (1) builds `variants_data.pkl` with the same generator and the same
-configuration fields as the released runs, (2) checks that the shipped protein
-cache covers every record (rebuilding it with ESM2-35M if not), and (3) trains
+configuration fields as the released runs, (2) builds and checks the protein
+cache (ESM2-35M when absent), and (3) trains
 20 epochs with early stopping and keeps the best checkpoint by validation
 combined accuracy. Expect several hours on one GPU for the full split
 (~15k records); the paper's seed-42 run reached 0.8497 validation combined
@@ -344,7 +278,7 @@ one-step `--smoke` check; the full recipe expects the complete split.
 |---|---|---|
 | NT-V3-Pre-8M | nucleotide encoder with trainable decoder and frozen backbone | `InstaDeepAI/NTv3_8M_pre` on Hugging Face, local folder |
 | ESM2-35M (`esm2_t12_35M_UR50D`) | frozen protein encoder | `facebook/esm2_t12_35M_UR50D` on Hugging Face |
-| trained checkpoint | needed for prediction/quickstart; produced by the training recipe | your own run |
+| trained checkpoint | needed for prediction; produced by the training recipe | your own run |
 
 `assets_manifest.json` records the expected file names and SHA-256 values for the
 encoder folder and, when present, the protein cache and checkpoints of a local run.
