@@ -345,12 +345,26 @@ the projection learns a "no protein channel" bias from that case.
 
 ## Predict
 
-```bash
-python - <<'PY'
+The checkpoint path selects the seed: point `model_path` at
+`runs/full_seed<SEED>/seed<SEED>/best_nucleotide_v3_mamba_model.pth` (training output) or at
+`assets/checkpoints/seed42/best_nucleotide_v3_mamba_model.pth` (released checkpoint). There is no
+automatic seed lookup and no need to `cd` when the path is correct; the loader prints the seed stored
+inside the checkpoint.
+
+```python
 from duetscreen.predict import SimpleNTv3Predictor
-p = SimpleNTv3Predictor('best_nucleotide_v3_mamba_model.pth', output_dir='out', threshold=0.5)
+
+p = SimpleNTv3Predictor(
+    'runs/full_seed42/seed42/best_nucleotide_v3_mamba_model.pth',
+    output_dir='out', threshold=0.5,
+    ntv3_model='assets/NTv3_8M_pre')
 p.predict('records.fasta', batch_size=64, threshold=0.5)
-PY
+```
+
+```bash
+python -m duetscreen.predict --fasta records.fasta \
+  --model runs/full_seed42/seed42/best_nucleotide_v3_mamba_model.pth \
+  --ntv3-model assets/NTv3_8M_pre --output-dir out --threshold 0.5
 ```
 
 Outputs per-record scores plus a metrics block when labels are present in the
@@ -359,7 +373,8 @@ FASTA headers (`|label:1` / `|label:0`).
 | Argument | Required | Meaning |
 |---|---|---|
 | `--fasta` | yes | input FASTA |
-| `--model` | yes | checkpoint path |
+| `--model` | yes | checkpoint path (selects the seed) |
+| `--ntv3-model` | no | encoder folder when the checkpoint stores a path from another host |
 | `--threshold` | no | classification threshold (default 0.5) |
 | `--batch-size` | no | inference batch size (default 64) |
 | `--output-dir` | no | output directory |

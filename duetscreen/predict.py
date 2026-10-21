@@ -154,6 +154,10 @@ class SimpleNTv3Predictor:
         
         # Load checkpoint
         checkpoint = torch.load(self.model_path, map_location='cpu')
+
+        _seed = (checkpoint.get('config') or {}).get('seed')
+        if _seed is not None:
+            print(f"  Training seed recorded in checkpoint: {_seed}")
         
         # Get model configuration
         model_config = checkpoint.get('model_config', {})
