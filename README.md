@@ -24,18 +24,19 @@ assets_manifest.json   required third-party assets, versions and hashes
 Dockerfile             reproducible CPU/GPU environment (see notes inside)
 ```
 
-## Published checkpoints and validation outputs
+## Dataset, checkpoints and scope
 
-The ten checkpoints in `assets/checkpoints/seed42` through `seed51` are the
-models from the paper's recorded training runs. Their SHA-256 values match
-`assets_manifest.json` and the corresponding entries in Source Data,
-`09_Configuration/final_model_run_index.json`.
+The benchmark dataset is archived on Zenodo: **https://doi.org/10.5281/zenodo.23534656**
+(mixed pool, strict pool and the species/family holdout sets, `pos_`/`neg_` labels in the FASTA IDs).
 
-The separate **one-epoch execution check** reported in `CHECKS.md` verifies that
-training, validation and checkpoint saving run successfully. Its checkpoint
-outputs are **not included in the released assets** and are not the models used
-for the paper's reported results. The 32-record smoke cache is example input
-data, not a checkpoint. Running a check locally produces separate check outputs.
+**Trained checkpoints from the paper are not redistributed.** This repository provides the complete
+training path, so a checkpoint can be trained from scratch on the published dataset with the same
+architecture, objective and hyper-parameters. Training is stochastic: a fresh run will not be
+bit-identical to the paper's seeds, but it follows the same recipe and reaches the same performance
+range (the seed-42 reference reached 0.8497 validation combined accuracy).
+
+Encoder weights are obtained from their upstream releases (see below); they are not embedded in
+this repository.
 
 ## Installation
 
@@ -49,7 +50,11 @@ pip install -r requirements.txt
 for common CUDA/PyTorch combinations; otherwise they compile against the CUDA
 toolkit (the Dockerfile shows one working recipe).
 
-## Quickstart
+## Quickstart (optional: requires a trained checkpoint)
+
+The quickstart is a self-check for the code path. It compares predictions against stored example
+scores, so it needs a checkpoint. Either train one first (see **Full retraining**) and pass its path
+through `MODEL=`, or skip this section and go directly to training.
 
 **One command runs the quickstart checks** (environment check → build → predict → compare
 scores against the recorded reference → one-step training check → PASS/FAIL):
@@ -70,8 +75,7 @@ release/
 ```
 
 The quickstart compares predictions with the eight stored example scores and
-runs a single training-step functionality check. It does not retrain the
-released checkpoints. A separate one-epoch execution check was also completed
+runs a single training-step functionality check. It does not retrain the model; prediction uses the checkpoint you provide. A separate one-epoch execution check was also completed
 during release validation; see `CHECKS.md`. Longer training is separate from
 the quickstart, and the data archive is supplied separately from this code.
 
@@ -94,7 +98,7 @@ that contains `assets/` and the unpacked package:
 ```
 release/
   DuetScreen/          <- this package (docker build here)
-  assets/              <- unzip DuetScreen_Model_Assets_v1.0.zip here
+  assets/              <- NTv3_8M_pre/ plus your trained checkpoint
 ```
 
 ```bash
@@ -169,31 +173,45 @@ falls back to a zero protein vector, which is the trained "no protein channel"
 condition. Rebuilding a cache with this module reproduced the shipped rows to
 fp16 precision (max |diff| 5e-4).
 
-## Full retraining (same recipe as the released seeds)
+## Full retraining from the public dataset
 
 The package contains the complete training path: split preparation, the
 supervised view generator (synonymous/codon-conservative and fragment-confusion
 views plus random-mutation contrastive negatives), the protein-cache builder,
-the trainer, and the audit checks. With the released `train.fasta` / `val.fasta`
-from the dataset archive you can train a checkpoint from scratch:
+the trainer, and the audit checks. No paper checkpoint is required.
 
 ```bash
-DATA=/path/to/split ./run_full_training.sh        # split holds train.fasta, val.fasta
-SEED=43 EPOCHS=20 ./run_full_training.sh
+# 1) dataset (mixed pool shown; strict pool and holdouts are separate archives)
+wget -O mixed_pool.zip "https://zenodo.org/records/23534656/files/mixed%20pool.zip?download=1"
+unzip -o mixed_pool.zip -d data/mixed          # train.fasta, val.fasta, test.fasta
+
+# 2) nucleotide encoder (Hugging Face)
+huggingface-cli download InstaDeepAI/NTv3_8M_pre --local-dir assets/NTv3_8M_pre
+
+# 3) build the Docker image once
+docker build -t duetscreen-release:1.0 .
+
+# 4) train (builds the record cache and, if absent, the ESM2 protein cache automatically)
+DATA=data/mixed ./run_full_training.sh
+SEED=43 EPOCHS=20 DATA=data/mixed ./run_full_training.sh
 ```
+
+The protein cache is rebuilt on the fly with `facebook/esm2_t12_35M_UR50D` when the shipped cache
+is absent, so the only assets needed are the dataset and the NT-V3 encoder folder. `ASSETS=` can
+point at any directory containing `NTv3_8M_pre/`.
 
 The script (1) builds `variants_data.pkl` with the same generator and the same
 configuration fields as the released runs, (2) checks that the shipped protein
 cache covers every record (rebuilding it with ESM2-35M if not), and (3) trains
 20 epochs with early stopping and keeps the best checkpoint by validation
 combined accuracy. Expect several hours on one GPU for the full split
-(~15k records); the released seed-42 run reached 0.8497 validation combined
+(~15k records); the paper's seed-42 run reached 0.8497 validation combined
 accuracy, which is the reference range for a healthy run.
 
 The result is **the same method, trained on your machine**: same architecture,
 objective, data and hyper-parameters, but a fresh initialization, so it will not
-be bit-identical to the released checkpoints (training is stochastic; the ten
-released seeds differ from each other in the same way).
+be bit-identical to the paper's checkpoints (training is stochastic; the ten
+paper seeds differ from each other in the same way).
 
 Minimum requirements: a cache with at least 8 training records per class for the
 one-step `--smoke` check; the full recipe expects the complete split.
@@ -204,11 +222,10 @@ one-step `--smoke` check; the full recipe expects the complete split.
 |---|---|---|
 | NT-V3-Pre-8M | nucleotide encoder with trainable decoder and frozen backbone | `InstaDeepAI/NTv3_8M_pre` on Hugging Face, local folder |
 | ESM2-35M (`esm2_t12_35M_UR50D`) | frozen protein encoder | `facebook/esm2_t12_35M_UR50D` on Hugging Face |
-| released checkpoint(s) | model weights from the paper runs | `assets_manifest.json` |
+| trained checkpoint (optional) | required only for prediction/quickstart, produced by the training recipe | your own run |
 
-`assets_manifest.json` lists the required asset files and their recorded SHA-256
-values. Model weights are distributed separately from this source
-package; the manifest is the source of truth for what belongs with a run.
+`assets_manifest.json` records the expected file names and SHA-256 values for the
+encoder folder and, when present, the protein cache and checkpoints of a local run.
 
 ## Build the protein cache
 
@@ -277,11 +294,11 @@ heads, batch 16, at most 20 epochs with patience 5, maximum 2,048 bp input.
 
 ## Data and model assets
 
-The benchmark dataset and the model assets are archived on Zenodo (DOI `DOI_PLACEHOLDER`):
-`DuetScreen_Benchmark_v1.0.zip` and `DuetScreen_Model_Assets_v1.0.zip` (ten checkpoints, NT-V3
-weights and the protein-segment cache). See `DATA_AND_WEIGHTS.md` for the file list, sizes and the
-directory layout expected by the quickstart. This repository contains source code only; no weights
-or sequence data are committed here.
+The benchmark dataset is archived on Zenodo: **https://doi.org/10.5281/zenodo.23534656**.
+Encoder weights are downloaded from Hugging Face (`InstaDeepAI/NTv3_8M_pre`,
+`facebook/esm2_t12_35M_UR50D`). The paper's trained checkpoints are not redistributed; train a
+checkpoint with the recipe above. See `DATA_AND_WEIGHTS.md` for the expected layout. This repository
+contains source code only; no weights or sequence data are committed here.
 
 ## Citation and license
 

@@ -1,46 +1,62 @@
-# Data and model assets
+# Data and encoder assets
 
-This repository contains source code only. The benchmark dataset and the released model assets are
-archived together on Zenodo; numerical source data for figures and tables accompany the journal
-submission.
+This repository contains source code only. The benchmark dataset is published on Zenodo; encoder
+weights are downloaded from Hugging Face. The paper's trained checkpoints are not redistributed.
 
 ## Where things live
 
-| Resource | Location | Size |
-|---|---|---|
-| Benchmark dataset | Zenodo, DOI `DOI_PLACEHOLDER`, `DuetScreen_Benchmark_v1.0.zip` | 382 MB |
-| Released checkpoints, NT-V3 weights, protein cache, smoke inputs | Zenodo, DOI `DOI_PLACEHOLDER`, `DuetScreen_Model_Assets_v1.0.zip` | 1.8 GB |
-| Numerical source data for figures and tables | Journal submission / Source Data archive | 29 MB |
+| Resource | Location |
+|---|---|
+| Benchmark dataset (mixed, strict, holdouts) | Zenodo: https://doi.org/10.5281/zenodo.23534656 |
+| Nucleotide encoder | Hugging Face: `InstaDeepAI/NTv3_8M_pre` |
+| Protein encoder | Hugging Face: `facebook/esm2_t12_35M_UR50D` (downloaded automatically) |
+| Trained checkpoints | not redistributed; produced by `run_full_training.sh` |
 
-## Layout after downloading the model assets
+## Dataset layout after download
 
 ```
-release/
-  DuetScreen/                     <- this repository
-  assets/
-    checkpoints/seed42..51/best_nucleotide_v3_mamba_model.pth
-    NTv3_8M_pre/
-    protein_seg_cache_35m.pkl
-    mini_train_cache.pkl
-    smoke.fasta
+data/
+  mixed/train.fasta, val.fasta, test.fasta
+  strict/train.fasta, val.fasta, test.fasta
+  holdout/generalization_species.fasta, generalization_family.fasta
 ```
 
-`run_quickstart.sh` / `run_quickstart.ps1` look for `assets/` next to the repository root and will
-unpack `DuetScreen_Model_Assets_v1.0.zip` if it is present there.
+Record IDs carry `pos_` / `neg_` prefixes; the training cache builder reads labels from them.
 
-## Benchmark
+## Encoder layout
 
-The Zenodo archive contains the source pool (18,740 records), mixed-pool and strict-pool splits,
-species and family holdouts, per-record evidence tables and the dataset build pipeline. Unpack it
-separately; it is not required for the quickstart, which uses the bundled smoke inputs.
+```
+assets/
+  NTv3_8M_pre/          # huggingface-cli download InstaDeepAI/NTv3_8M_pre --local-dir ...
+```
 
-## Checksums
+`run_full_training.sh` looks for `assets/NTv3_8M_pre` (or `ASSETS=<dir>` containing it). The ESM2
+protein cache is rebuilt automatically from `facebook/esm2_t12_35M_UR50D` if no cache is present.
 
-- Model assets: per-file SHA-256 in `assets_manifest.json`; archive hash in the Zenodo `SHA256SUMS.txt`.
-- Benchmark: `MANIFEST.json` inside the archive and `SHA256SUMS.txt` on the Zenodo record.
+## Training from scratch
+
+```bash
+docker build -t duetscreen-release:1.0 .
+DATA=data/mixed ./run_full_training.sh
+```
+
+No checkpoint is needed to start training. The script builds the training-view cache, the protein
+cache and then trains for 20 epochs with early stopping.
+
+## Expected files of a local run
+
+```
+runs/full_seed42/
+  variants_data.pkl
+  protein_seg_cache.pkl
+  seed42/best_nucleotide_v3_mamba_model.pth
+  seed42/progress.jsonl
+```
+
+`assets_manifest.json` records the expected names and hashes for the encoder folder and, when
+present, the protein cache and checkpoints of a local run.
 
 ## Licence
 
-Code: MIT (`LICENSE`). Third-party components: see `THIRD_PARTY.md`.
-Dataset and trained checkpoints: CC BY 4.0 for author-created content; upstream sequence and model
-sources retain their own terms.
+Code: MIT (`LICENSE`). Third-party components: see `THIRD_PARTY.md`. Dataset: CC BY 4.0 for
+author-created curation and splits; upstream sequence sources retain their own terms.

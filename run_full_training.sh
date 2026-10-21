@@ -33,10 +33,10 @@ fail() { printf 'FAIL: %s\n' "$*"; exit 1; }
 
 if [ -z "${ASSETS:-}" ]; then
   for c in "$HERE/assets" "$HERE/../assets"; do
-    [ -d "$c/checkpoints/seed42" ] && ASSETS="$c" && break
+    [ -d "$c/NTv3_8M_pre" ] && ASSETS="$c" && break
   done
 fi
-[ -n "${ASSETS:-}" ] || fail "assets not found; set ASSETS=/path/to/assets"
+[ -n "${ASSETS:-}" ] || fail "NT-V3 encoder folder not found; set ASSETS=/path/to/assets containing NTv3_8M_pre"
 ASSETS="$(cd "$ASSETS" && pwd)"
 mkdir -p "$WORK"
 
