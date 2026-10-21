@@ -3,8 +3,9 @@
 A small, fixed subset for reviewers who want to see the full pipeline run in a few minutes instead
 of training on the complete benchmark.
 
-The archive is distributed separately (`DuetScreen_ToySubset.zip`, Zenodo DOI
-`TOY_DOI_PLACEHOLDER`). Unpack it into this folder so that `toy/data/` and `toy/cache/` exist.
+The archive is distributed separately (`DuetScreen_ToySubset.zip`,
+https://doi.org/10.5281/zenodo.23538086). Unpack it into this folder so that `toy/data/` and
+`toy/cache/` exist.
 
 Contents of the distributed archive (`DuetScreen_ToySubset.zip`):
 

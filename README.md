@@ -233,7 +233,7 @@ condition. Rebuilding a cache with this module reproduces rows to fp16 precision
 ## Toy validation (1 epoch)
 
 A fixed 120/40/40 subset with precomputed training views and protein cache is distributed
-separately (`DuetScreen_ToySubset.zip`, Zenodo DOI `TOY_DOI_PLACEHOLDER`). Unpack it into `toy/` so
+separately (`DuetScreen_ToySubset.zip`, https://doi.org/10.5281/zenodo.23538086). Unpack it into `toy/` so
 that `toy/data/` and `toy/cache/` exist, then run:
 
 ```bash
