@@ -6,8 +6,8 @@ date-released: 2026-10-21
 license: MIT
 type: software
 authors:
-  - name: "DuetScreen authors"
-repository-code: "https://github.com/ORG/REPO"
+  - name: "Anonymous"
+repository-code: "https://github.com/qiaosuheng/DuetScreen"
 abstract: >-
   DuetScreen is a dual-space nucleotide and protein screening model for DNA sequences.
   It combines a partially adapted Nucleotide Transformer v3 encoder with a frozen ESM2-35M
