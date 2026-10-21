@@ -50,6 +50,7 @@ contrastive projection.
 - `configs/duetscreen_release.json`: the configuration used for the reported runs.
 - `docker/`: container entry points for training, smoke training and prediction.
 - `tools/`: cache-coverage and result-verification utilities.
+- `toy/`: one-epoch toy workflow; `toy/data/` and `toy/cache/` are created after unpacking the toy archive.
 - `Dockerfile`, `requirements.txt`: pinned environment.
 - `docs/`: setup and troubleshooting notes.
 
@@ -74,6 +75,18 @@ DuetScreen/
 ├── requirements.txt
 ├── run_full_training.sh
 ├── run_quickstart.sh
+├── toy/
+│   ├── README.md
+│   ├── run_toy.sh
+│   ├── run_toy.ps1
+│   ├── expected_metrics.json
+│   ├── data/                    after unpacking DuetScreen_ToySubset.zip
+│   │   ├── train_toy.fasta
+│   │   ├── val_toy.fasta
+│   │   └── test_toy.fasta
+│   └── cache/                   after unpacking DuetScreen_ToySubset.zip
+│       ├── variants_data_toy.pkl
+│       └── protein_seg_cache_toy.pkl
 ├── assets/
 │   └── NTv3_8M_pre/             nucleotide encoder (Hugging Face download)
 ├── data/
@@ -94,6 +107,11 @@ DuetScreen/
 
 The Docker image `duetscreen-release:1.0` is built once from the repository root; no other local
 state is required. `runs/` is created by the training script and is not tracked by git.
+
+`toy/data/` and `toy/cache/` are not tracked in git: unpack
+`DuetScreen_ToySubset.zip` (https://doi.org/10.5281/zenodo.23538086) directly into `toy/`. The
+archive already contains the `data/` and `cache/` folders, and `toy/run_toy.sh` writes its outputs to
+`toy/out/`.
 
 ## Data availability
 
