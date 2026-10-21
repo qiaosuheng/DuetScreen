@@ -1,0 +1,23 @@
+{
+  "model": "DuetScreen",
+  "backbone": "NT-V3-Pre-8M",
+  "ntv3_registered_parameters": 7692475,
+  "decoder_trainable": 2763264,
+  "downstream_trainable": 2987761,
+  "trainable_total": 5751025,
+  "protein_encoder": "esm2_t12_35M_UR50D",
+  "protein_encoder_frozen": true,
+  "protein_width": 480,
+  "protein_segments": 16,
+  "projection_width": 256,
+  "segment_attention_heads": 4,
+  "downstream_core": "two Mamba blocks and two local residual blocks",
+  "training": {
+    "seeds": [42, 43, 44, 45, 46, 47, 48, 49, 50, 51],
+    "batch_size": 16,
+    "max_epochs": 20,
+    "early_stop_patience": 5,
+    "max_seq_len": 2048,
+    "checkpoint_selection": "validation combined ACC (first maximum, 1-based epoch)"
+  }
+}

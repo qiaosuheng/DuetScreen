@@ -1,0 +1,12 @@
+# Install the CUDA PyTorch wheel first; see README.md.
+transformers==4.57.1
+numpy>=1.26,<3
+scikit-learn>=1.4,<2
+einops>=0.8,<1
+tqdm>=4.66,<5
+packaging>=24
+ninja>=1.11
+biopython>=1.81,<2
+pandas>=2.0,<3
+matplotlib>=3.7,<4
+seaborn>=0.13,<1

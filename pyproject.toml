@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "duetscreen"
+version = "1.0.0"
+description = "DuetScreen: dual-space nucleotide + protein sequence screening model"
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT" }
+
+[tool.setuptools]
+packages = ["duetscreen"]

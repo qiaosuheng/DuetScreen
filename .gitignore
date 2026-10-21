@@ -1,0 +1,26 @@
+# Model weights and caches (distributed separately)
+assets/
+checkpoints/
+*.pth
+*.pkl
+
+# Outputs
+runs/
+out*/
+work_quickstart*/
+out_quickstart*/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+build/
+dist/
+*.egg-info/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

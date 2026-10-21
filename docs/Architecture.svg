@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="1120" viewBox="0 0 760 1120"><title>DuetScreen architecture</title><rect width="100%" height="100%" fill="white"/>
+<text x="8" y="33.1" text-anchor="start" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="400"><tspan x="8" dy="0">b</tspan></text>
+<rect x="46" y="34" width="88" height="59" rx="0" fill="#5F92B5" stroke="none" stroke-width="1"/>
+<ellipse cx="90" cy="93.5" rx="44" ry="11.5" fill="#5F92B5" stroke="none" stroke-width="1"/>
+<path d="M46,52.349999999999994 L48.75,53.03611998230692 L51.5,53.71563225411289 L54.25,54.38199274078123 L57,55.02878402655562 L59.75,55.649777157781976 L62.5,56.23899163113721 L65.25,56.79075298914551 L68,57.299747468305824 L70.75,57.76107317353915 L73.5,58.17028728611781 L76.25,58.52344885043848 L79,58.817156727579004 L81.75,59.04858235012546 L84.5,59.215496962822606 L87.25,59.31629308670537 L90,59.349999999999994 L92.75,59.31629308670537 L95.5,59.215496962822606 L98.25,59.04858235012546 L101,58.817156727579004 L103.75,58.52344885043848 L106.5,58.17028728611781 L109.25,57.76107317353915 L112,57.299747468305824 L114.75,56.79075298914551 L117.5,56.23899163113721 L120.25,55.649777157781976 L123,55.02878402655563 L125.75,54.38199274078123 L128.5,53.7156322541129 L131.25,53.03611998230692 L134,52.349999999999994" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M46,83.13 L48.75,83.81611998230692 L51.5,84.49563225411289 L54.25,85.16199274078123 L57,85.80878402655563 L59.75,86.42977715778198 L62.5,87.01899163113721 L65.25,87.57075298914552 L68,88.07974746830583 L70.75,88.54107317353916 L73.5,88.95028728611781 L76.25,89.30344885043849 L79,89.597156727579 L81.75,89.82858235012546 L84.5,89.99549696282261 L87.25,90.09629308670537 L90,90.13 L92.75,90.09629308670537 L95.5,89.99549696282261 L98.25,89.82858235012546 L101,89.597156727579 L103.75,89.30344885043849 L106.5,88.95028728611781 L109.25,88.54107317353916 L112,88.07974746830583 L114.75,87.57075298914552 L117.5,87.01899163113721 L120.25,86.42977715778198 L123,85.80878402655563 L125.75,85.16199274078123 L128.5,84.49563225411289 L131.25,83.81611998230692 L134,83.13" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="90" cy="35.5" rx="44" ry="11.5" fill="#5F92B5" stroke="white" stroke-width="1.8"/>
+<ellipse cx="90" cy="34.5" rx="33.44" ry="6.5" fill="white" stroke="none" stroke-width="1"/>
+<text x="90" y="77.4" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400"><tspan x="90" dy="0">NCBI</tspan></text>
+<rect x="46" y="189" width="88" height="59" rx="0" fill="#E67B68" stroke="none" stroke-width="1"/>
+<ellipse cx="90" cy="248.5" rx="44" ry="11.5" fill="#E67B68" stroke="none" stroke-width="1"/>
+<path d="M46,207.35 L48.75,208.03611998230693 L51.5,208.7156322541129 L54.25,209.38199274078124 L57,210.02878402655563 L59.75,210.64977715778198 L62.5,211.2389916311372 L65.25,211.79075298914552 L68,212.29974746830584 L70.75,212.76107317353916 L73.5,213.1702872861178 L76.25,213.52344885043848 L79,213.817156727579 L81.75,214.04858235012546 L84.5,214.2154969628226 L87.25,214.31629308670537 L90,214.35 L92.75,214.31629308670537 L95.5,214.2154969628226 L98.25,214.04858235012546 L101,213.817156727579 L103.75,213.52344885043848 L106.5,213.1702872861178 L109.25,212.76107317353916 L112,212.29974746830584 L114.75,211.79075298914552 L117.5,211.2389916311372 L120.25,210.64977715778198 L123,210.02878402655563 L125.75,209.38199274078124 L128.5,208.7156322541129 L131.25,208.03611998230693 L134,207.35" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M46,238.13 L48.75,238.81611998230693 L51.5,239.4956322541129 L54.25,240.16199274078124 L57,240.80878402655563 L59.75,241.42977715778198 L62.5,242.0189916311372 L65.25,242.57075298914552 L68,243.07974746830584 L70.75,243.54107317353916 L73.5,243.9502872861178 L76.25,244.30344885043849 L79,244.597156727579 L81.75,244.82858235012546 L84.5,244.9954969628226 L87.25,245.09629308670537 L90,245.13 L92.75,245.09629308670537 L95.5,244.9954969628226 L98.25,244.82858235012546 L101,244.597156727579 L103.75,244.30344885043849 L106.5,243.95028728611783 L109.25,243.54107317353916 L112,243.07974746830584 L114.75,242.57075298914552 L117.5,242.0189916311372 L120.25,241.42977715778198 L123,240.80878402655563 L125.75,240.16199274078124 L128.5,239.4956322541129 L131.25,238.81611998230693 L134,238.13" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="90" cy="190.5" rx="44" ry="11.5" fill="#E67B68" stroke="white" stroke-width="1.8"/>
+<ellipse cx="90" cy="189.5" rx="33.44" ry="6.5" fill="white" stroke="none" stroke-width="1"/>
+<text x="90" y="232.4" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400"><tspan x="90" dy="0">VFDB</tspan></text>
+<text x="90" y="148.3" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="90" dy="0">Database</tspan></text>
+<path d="M140,64.5 L175,64.5" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M175,64.5 L167,61.06 L167,67.94 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M140,219.5 L175,219.5" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M175,219.5 L167,216.06 L167,222.94 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="186.5" y="147.70000000000002" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" transform="rotate(-90 186.5 142)"><tspan x="186.5" dy="0">Preprocessing</tspan></text>
+<text x="232" y="140.2" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400"><tspan x="232" dy="0">Split</tspan></text>
+<path d="M199,154 L256,154" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M256,154 L248,150.56 L248,157.44 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="264" y="10" width="478" height="282" rx="18" fill="none" stroke="#6185B9" stroke-width="1.5" stroke-dasharray="8 6"/>
+<path d="M281,25 L725,25 L657,95 L348,95 Z" fill="#D9F0F7" stroke="none" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="348" y="116" width="310" height="47" rx="0" fill="#D9F0F7" stroke="none" stroke-width="1"/>
+<path d="M348,182 L657,182 L725,260 L281,260 Z" fill="#D9F0F7" stroke="none" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="494.5" y="53.83" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="494.5" dy="0">Convolutional</tspan><tspan x="494.5" dy="23.939999999999998">Tower</tspan></text>
+<path d="M658,59.5 L658,44.5" fill="none" stroke="#679ACE" stroke-width="1.9500000000000002" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,51.7 L654.1816233815927,47.88162338159265" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,51.7 L661.8183766184073,47.88162338159265" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,59.5 L670.9903810567665,52" fill="none" stroke="#679ACE" stroke-width="1.9500000000000002" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M664.7549981495187,55.6 L666.1526209930722,50.38400053803903" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M664.7549981495187,55.6 L669.9709976114797,56.997622843553614" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,59.5 L670.9903810567666,67" fill="none" stroke="#679ACE" stroke-width="1.9500000000000002" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M664.7549981495187,63.4 L669.9709976114797,62.002377156446386" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M664.7549981495187,63.4 L666.1526209930722,68.61599946196097" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,59.5 L658,74.5" fill="none" stroke="#679ACE" stroke-width="1.9500000000000002" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,67.3 L661.8183766184073,71.11837661840735" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,67.3 L654.1816233815927,71.11837661840735" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,59.5 L645.0096189432335,67" fill="none" stroke="#679ACE" stroke-width="1.9500000000000002" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M651.2450018504813,63.400000000000006 L649.8473790069278,68.61599946196097" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M651.2450018504813,63.400000000000006 L646.0290023885203,62.00237715644639" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,59.5 L645.0096189432335,52" fill="none" stroke="#679ACE" stroke-width="1.9500000000000002" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M651.2450018504813,55.6 L646.0290023885203,56.997622843553614" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M651.2450018504813,55.6 L649.8473790069278,50.38400053803903" fill="none" stroke="#679ACE" stroke-width="1.725" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="658" cy="59.5" rx="1.2750000000000001" ry="1.2750000000000001" fill="#679ACE" stroke="none" stroke-width="1"/>
+<text x="502.5" y="145.5" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400"><tspan x="502.5" dy="0">Transformer Tower</tspan></text>
+<text x="493.5" y="212.83" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="493.5" dy="0">Deconvolutional</tspan><tspan x="493.5" dy="23.939999999999998">Tower</tspan></text>
+<path d="M657.76,202.5 L663.52,208.9 L664.96,214.02 L662.08,216.26 L666.4,214.02 L669.04,222.98 L668.56,228.74 L664.48,233.22 L658.48,234.5 L652.48,233.54 L648.64,229.38 L647.44,222.02 L650.8,214.66 L651.28,222.98 L655.6,214.98 L657.76,209.22 L657.76,202.5 Z" fill="#EF665D" stroke="#EB5B58" stroke-width="0.8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M657.76,212.1 L660.88,217.54 L660.64,222.34 L663.28,220.42000000000002 L664.72,227.14 L661.36,231.3 L656.32,232.26 L653.2,228.74 L652.96,222.34 L655.6,225.54 L656.56,219.46 Z" fill="#FBB38A" stroke="none" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="700" y="145.4" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400"><tspan x="700" dy="0">NT-V3</tspan></text>
+<path d="M286,40 L286,116" fill="none" stroke="#A4A4A4" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M301,61 L301,116" fill="none" stroke="#A4A4A4" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M316,81 L316,116" fill="none" stroke="#A4A4A4" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="307" y="144.70000000000002" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400"><tspan x="307" dy="0">U-Net</tspan></text>
+<path d="M286,167 L286,238" fill="none" stroke="#A4A4A4" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M286,238 L289.87,229 L282.13,229 Z" fill="#A4A4A4" stroke="#A4A4A4" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M301,167 L301,216" fill="none" stroke="#A4A4A4" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M301,216 L304.87,207 L297.13,207 Z" fill="#A4A4A4" stroke="#A4A4A4" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M316,167 L316,195" fill="none" stroke="#A4A4A4" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M316,195 L319.87,186 L312.13,186 Z" fill="#A4A4A4" stroke="#A4A4A4" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="22" y="329" width="716" height="641" rx="18" fill="none" stroke="#6185B9" stroke-width="1.5" stroke-dasharray="8 6"/>
+<text x="35" y="368.6" text-anchor="start" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="400"><tspan x="35" dy="0">c</tspan></text>
+<rect x="258" y="347" width="244" height="44" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="380" y="375.9" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400"><tspan x="380" dy="0">DNA input</tspan></text>
+<rect x="44" y="474" width="304" height="384" rx="16" fill="#F6E9F5" stroke="none" stroke-width="0"/>
+<rect x="412" y="474" width="304" height="396" rx="16" fill="#F6E9F5" stroke="none" stroke-width="0"/>
+<text x="196" y="443.79999999999995" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="196" dy="0">Nucleotide space</tspan></text>
+<text x="562.5" y="443.79999999999995" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="562.5" dy="0">Protein space</tspan></text>
+<path d="M380,391 L380,461 L195,461 L195,490" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M195,490 L198.44,482 L191.56,482 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M380,461 L562,461 L562,490" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M562,490 L565.44,482 L558.56,482 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="65" y="490" width="262" height="44" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="196" y="518.3" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="196" dy="0">Adapted NT-V3</tspan></text>
+<path d="M195,534 L195,554 L130,554 L130,583" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M130,583 L133.44,575 L126.56,575 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M195,554 L262,554 L262,583" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M262,583 L265.44,575 L258.56,575 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="74" y="583" width="113" height="62" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="130.5" y="609.5450000000001" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="16.5" font-weight="400"><tspan x="130.5" dy="0">State-space</tspan><tspan x="130.5" dy="18.81">×2</tspan></text>
+<rect x="205" y="583" width="113" height="62" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="261.5" y="609.5450000000001" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="16.5" font-weight="400"><tspan x="261.5" dy="0">Convolution</tspan><tspan x="261.5" dy="18.81">×2</tspan></text>
+<path d="M130,645 L130,666 L262,666 L262,645" fill="none" stroke="#B4D4E6" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M195,666 L195,686" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M195,686 L198.44,678 L191.56,678 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="65" y="686" width="262" height="43" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="196" y="713.8" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="196" dy="0">Token fusion</tspan></text>
+<path d="M195,729 L195,751" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M195,751 L198.44,743 L191.56,743 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="65" y="751" width="262" height="43" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="196" y="778.5" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400"><tspan x="196" dy="0">Mean pooling + LN</tspan></text>
+<path d="M195,794 L195,812" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M195,812 L198.44,804 L191.56,804 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="122" y="814" width="16.5" height="20" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="140.5" y="814" width="16.5" height="20" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="159" y="814" width="16.5" height="20" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="177.5" y="814" width="16.5" height="20" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="196" y="814" width="16.5" height="20" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="214.5" y="814" width="16.5" height="20" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="233" y="814" width="16.5" height="20" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="251.5" y="814" width="16.5" height="20" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="431" y="490" width="262" height="42" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="562" y="517.3" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="562" dy="0">Translation</tspan></text>
+<path d="M562,532 L562,553" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M562,553 L565.44,545 L558.56,545 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="431" y="553" width="262" height="45" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="562" y="581.8" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="562" dy="0">Frozen ESM-2</tspan></text>
+<path d="M658,575.5 L658,564" fill="none" stroke="#679ACE" stroke-width="1.495" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,569.52 L655.0725779258877,566.5925779258877" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,569.52 L660.9274220741123,566.5925779258877" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,575.5 L667.959292143521,569.75" fill="none" stroke="#679ACE" stroke-width="1.495" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M663.1788319146309,572.51 L664.2503427613553,568.5110670791632" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M663.1788319146309,572.51 L667.1777648354677,573.5815108467244" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,575.5 L667.959292143521,581.25" fill="none" stroke="#679ACE" stroke-width="1.495" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M663.1788319146309,578.49 L667.1777648354677,577.4184891532756" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M663.1788319146309,578.49 L664.2503427613553,582.4889329208368" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,575.5 L658,587" fill="none" stroke="#679ACE" stroke-width="1.495" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,581.48 L660.9274220741123,584.4074220741123" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,581.48 L655.0725779258877,584.4074220741123" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,575.5 L648.040707856479,581.25" fill="none" stroke="#679ACE" stroke-width="1.495" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M652.8211680853691,578.49 L651.7496572386447,582.4889329208368" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M652.8211680853691,578.49 L648.8222351645323,577.4184891532756" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M658,575.5 L648.040707856479,569.75" fill="none" stroke="#679ACE" stroke-width="1.495" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M652.8211680853691,572.51 L648.8222351645323,573.5815108467244" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M652.8211680853691,572.51 L651.7496572386447,568.5110670791632" fill="none" stroke="#679ACE" stroke-width="1.3225" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="658" cy="575.5" rx="0.9775" ry="0.9775" fill="#679ACE" stroke="none" stroke-width="1"/>
+<path d="M562,598 L562,621" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M562,621 L565.44,613 L558.56,613 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="561" y="639.1999999999999" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400"><tspan x="561" dy="0">16 segment summaries</tspan></text>
+<rect x="448" y="654" width="12.3125" height="24" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="462.3125" y="654" width="12.3125" height="24" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="476.625" y="654" width="12.3125" height="24" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="490.9375" y="654" width="12.3125" height="24" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="505.25" y="654" width="12.3125" height="24" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="519.5625" y="654" width="12.3125" height="24" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="533.875" y="654" width="12.3125" height="24" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="548.1875" y="654" width="12.3125" height="24" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="562.5" y="654" width="12.3125" height="24" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="576.8125" y="654" width="12.3125" height="24" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="591.125" y="654" width="12.3125" height="24" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="605.4375" y="654" width="12.3125" height="24" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="619.75" y="654" width="12.3125" height="24" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="634.0625" y="654" width="12.3125" height="24" rx="0" fill="#D8EBF7" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="648.375" y="654" width="12.3125" height="24" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<rect x="662.6875" y="654" width="12.3125" height="24" rx="0" fill="#BED9ED" stroke="#6185B9" stroke-width="0.7"/>
+<path d="M562,678 L562,704" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M562,704 L565.44,696 L558.56,696 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="431" y="704" width="262" height="45" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="562" y="732.5" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400"><tspan x="562" dy="0">Segment self-attention</tspan></text>
+<path d="M562,749 L562,800" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M562,800 L565.44,792 L558.56,792 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="609.5" y="782.5999999999999" text-anchor="middle" fill="#596773" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400"><tspan x="609.5" dy="0">K, V</tspan></text>
+<path d="M195,834 L195,854" fill="none" stroke="#B4D4E6" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="208" y="854.5999999999999" text-anchor="start" fill="#596773" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" font-style="italic"><tspan x="208" dy="0">h_nt</tspan></text>
+<path d="M268,824 L431,824" fill="none" stroke="#B4D4E6" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M431,824 L423,820.56 L423,827.44 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="354" y="813.4" text-anchor="middle" fill="#596773" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400"><tspan x="354" dy="0">Q</tspan></text>
+<rect x="431" y="800" width="262" height="48" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="562" y="830.3" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="562" dy="0">Protein readout</tspan></text>
+<path d="M195,854 L195,925 L213,925" fill="none" stroke="#B4D4E6" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M213,925 L205,921.56 L205,928.44 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M562,848 L562,925 L549,925" fill="none" stroke="#B4D4E6" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M549,925 L557,928.44 L557,921.56 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="578" y="890.5999999999999" text-anchor="start" fill="#596773" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" font-style="italic"><tspan x="578" dy="0">h_pr</tspan></text>
+<rect x="213" y="898" width="336" height="58" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="381" y="923.55" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400"><tspan x="381" dy="0">Representation fusion</tspan></text>
+<text x="381" y="945.54" text-anchor="middle" fill="#596773" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400"><tspan x="381" dy="0">Concatenate + project</tspan></text>
+<path d="M381,956 L381,987" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="381" cy="987" rx="3.7" ry="3.7" fill="#B4D4E6" stroke="none" stroke-width="1"/>
+<path d="M381,987 L193,987 L193,1015" fill="none" stroke="#B4D4E6" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="7 5"/>
+<path d="M193,1015 L196.44,1007 L189.56,1007 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M381,987 L566,987 L566,1015" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M566,1015 L569.44,1007 L562.56,1007 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="52" y="1015" width="282" height="47" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="193" y="1044.8" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400"><tspan x="193" dy="0">Contrastive projection</tspan></text>
+<rect x="425" y="1015" width="282" height="47" rx="10" fill="#E2F5FA" stroke="#6185B9" stroke-width="1.6"/>
+<text x="566" y="1045.4" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400"><tspan x="566" dy="0">Classifier</tspan></text>
+<path d="M566,1062 L566,1080" fill="none" stroke="#B4D4E6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M566,1080 L569.44,1072 L562.56,1072 Z" fill="#B4D4E6" stroke="#B4D4E6" stroke-width="0" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="193.5" y="1092.9" text-anchor="middle" fill="#596773" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400"><tspan x="193.5" dy="0">Training only</tspan></text>
+<text x="566" y="1101.7" text-anchor="middle" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400"><tspan x="566" dy="0">Screening score</tspan></text>
+</svg>

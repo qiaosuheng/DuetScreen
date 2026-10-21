@@ -1,0 +1,16 @@
+{
+ "description": "Reference scores for examples/quickstart.fasta with the seed-42 checkpoint (first 2048 bp; produced on the release host).",
+ "checkpoint": "checkpoints/seed42/best_nucleotide_v3_mamba_model.pth",
+ "cache": "protein_seg_cache_35m.pkl",
+ "tolerance": 0.002,
+ "scores": {
+  "pos_0000027": 0.80078721,
+  "pos_0000029": 0.013449,
+  "pos_0000047": 0.99810755,
+  "pos_0000065": 0.89224803,
+  "neg_GCF_009035845_1_003417": 0.00054767,
+  "neg_GCF_009035845_1_003119": 0.02021127,
+  "neg_GCF_009035845_1_000040": 9.6e-07,
+  "neg_GCF_009035845_1_002977": 1.79e-06
+ }
+}
