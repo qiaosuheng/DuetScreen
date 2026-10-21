@@ -24,19 +24,54 @@ assets_manifest.json   required third-party assets, versions and hashes
 Dockerfile             reproducible CPU/GPU environment (see notes inside)
 ```
 
-## Dataset, checkpoints and scope
+## Project layout after setup
+
+A working checkout after downloading the encoder, the dataset and running one training job:
+
+```
+DuetScreen/
+├── duetscreen/                  model, encoder, data, trainer, predict CLI
+├── configs/                     released configuration snapshot
+├── docker/                      run_train.sh, run_predict.sh, run_train_smoke.sh
+├── docs/                        setup notes
+├── tools/                       cache coverage and result verification
+├── Dockerfile
+├── requirements.txt
+├── run_full_training.sh
+├── run_quickstart.sh
+├── assets/
+│   └── NTv3_8M_pre/             nucleotide encoder (Hugging Face download)
+├── data/
+│   └── mixed/
+│       ├── train.fasta
+│       ├── val.fasta
+│       └── test.fasta
+└── runs/
+    └── full_seed42/
+        ├── variants_data.pkl    training views built from train/val
+        ├── protein_seg_cache.pkl
+        └── seed42/
+            ├── best_nucleotide_v3_mamba_model.pth
+            ├── nucleotide_v3_training_log.json
+            ├── progress.jsonl
+            └── complete.json
+```
+
+The Docker image `duetscreen-release:1.0` is built once from the repository root; no other local
+state is required. `runs/` is created by the training script and is not tracked by git.
+
+## Dataset and model assets
 
 The benchmark dataset is archived on Zenodo: **https://doi.org/10.5281/zenodo.23534656**
 (mixed pool, strict pool and the species/family holdout sets, `pos_`/`neg_` labels in the FASTA IDs).
 
-**Trained checkpoints from the paper are not redistributed.** This repository provides the complete
-training path, so a checkpoint can be trained from scratch on the published dataset with the same
-architecture, objective and hyper-parameters. Training is stochastic: a fresh run will not be
-bit-identical to the paper's seeds, but it follows the same recipe and reaches the same performance
-range (the seed-42 reference reached 0.8497 validation combined accuracy).
+The training recipe writes the checkpoint to
+`runs/full_seed<ID>/seed<ID>/best_nucleotide_v3_mamba_model.pth`; prediction and the quickstart
+accept that path through `MODEL=` or `--model`. Training is stochastic, so a fresh run follows the
+same recipe and performance range as the paper's seeds without being bit-identical (the seed-42
+reference reached 0.8497 validation combined accuracy).
 
-Encoder weights are obtained from their upstream releases (see below); they are not embedded in
-this repository.
+Encoder weights are obtained from their upstream releases (see below).
 
 ## Installation
 
@@ -50,11 +85,10 @@ pip install -r requirements.txt
 for common CUDA/PyTorch combinations; otherwise they compile against the CUDA
 toolkit (the Dockerfile shows one working recipe).
 
-## Quickstart (optional: requires a trained checkpoint)
+## Quickstart
 
 The quickstart is a self-check for the code path. It compares predictions against stored example
-scores, so it needs a checkpoint. Either train one first (see **Full retraining**) and pass its path
-through `MODEL=`, or skip this section and go directly to training.
+scores, so it reads a checkpoint; pass the path produced by training through `MODEL=`.
 
 **One command runs the quickstart checks** (environment check → build → predict → compare
 scores against the recorded reference → one-step training check → PASS/FAIL):
@@ -295,9 +329,9 @@ heads, batch 16, at most 20 epochs with patience 5, maximum 2,048 bp input.
 
 The benchmark dataset is archived on Zenodo: **https://doi.org/10.5281/zenodo.23534656**.
 Encoder weights are downloaded from Hugging Face (`InstaDeepAI/NTv3_8M_pre`,
-`facebook/esm2_t12_35M_UR50D`). The paper's trained checkpoints are not redistributed; train a
-checkpoint with the recipe above. See `DATA_AND_WEIGHTS.md` for the expected layout. This repository
-contains source code only; no weights or sequence data are committed here.
+`facebook/esm2_t12_35M_UR50D`). A checkpoint is produced by the training recipe above and consumed
+by prediction. See `DATA_AND_WEIGHTS.md` for the expected layout. This repository contains source
+code only; local data, encoder downloads and run outputs stay outside version control.
 
 ## Citation and license
 

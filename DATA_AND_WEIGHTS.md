@@ -1,7 +1,7 @@
 # Data and encoder assets
 
 This repository contains source code only. The benchmark dataset is published on Zenodo; encoder
-weights are downloaded from Hugging Face. The paper's trained checkpoints are not redistributed.
+weights are downloaded from Hugging Face. A checkpoint is produced locally by the training recipe.
 
 ## Where things live
 
@@ -10,7 +10,7 @@ weights are downloaded from Hugging Face. The paper's trained checkpoints are no
 | Benchmark dataset (mixed, strict, holdouts) | Zenodo: https://doi.org/10.5281/zenodo.23534656 |
 | Nucleotide encoder | Hugging Face: `InstaDeepAI/NTv3_8M_pre` |
 | Protein encoder | Hugging Face: `facebook/esm2_t12_35M_UR50D` (downloaded automatically) |
-| Trained checkpoints | not redistributed; produced by `run_full_training.sh` |
+| Trained checkpoint | produced locally by `run_full_training.sh` |
 
 ## Dataset layout after download
 
