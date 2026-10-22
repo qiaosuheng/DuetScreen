@@ -313,7 +313,8 @@ Encoder weights are obtained from their upstream releases (see below).
 ## Model weights
 
 The seed-42 checkpoint and the NT-V3 encoder are archived at
-**https://doi.org/10.5281/zenodo.23535423** (CC BY 4.0):
+**https://doi.org/10.5281/zenodo.23535423** (record licence CC BY 4.0; the NT-V3 weights retain
+their upstream terms):
 
 | File | Contents |
 |---|---|
