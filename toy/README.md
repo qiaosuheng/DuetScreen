@@ -35,6 +35,9 @@ From the repository root, with the toy archive unpacked into `toy/`:
 ASSETS=assets ./toy/run_toy.sh
 ```
 
+On Windows use `.\toy\run_toy.ps1 -Assets assets`. If PowerShell reports that running scripts is
+disabled, start it with `powershell -ExecutionPolicy Bypass -File .\toy\run_toy.ps1 -Assets assets`.
+
 The script runs one training epoch on the toy split and then predicts the toy test set. On an
 RTX 5070 Ti this takes about two minutes in total.
 

@@ -161,6 +161,10 @@ and writes `out_eval/detailed_results.json` plus `out_eval/predictions_threshold
 did not download the full protein cache, use the one produced by training:
 `CACHE=runs/full_seed42/protein_seg_cache.pkl`.
 
+On Windows use `.\run_eval.ps1 -Model ... -Data ... -Cache ...`; if PowerShell blocks scripts, add
+`-ExecutionPolicy Bypass` by starting it as
+`powershell -ExecutionPolicy Bypass -File .\run_eval.ps1 ...`.
+
 ### 6. Optional: toy check (about two minutes)
 
 ```bash
@@ -170,6 +174,9 @@ ASSETS=assets ./toy/run_toy.sh
 
 `toy/run_toy.sh` lives in the `toy/` subdirectory and needs no full cache. The source tree contains
 only `toy/run_toy.sh`; `toy/data/` and `toy/cache/` appear after unpacking the toy archive.
+
+On Windows use `.\toy\run_toy.ps1 -Assets assets`; if PowerShell blocks scripts, run it with
+`powershell -ExecutionPolicy Bypass -File .\toy\run_toy.ps1 -Assets assets`.
 
 ### Where the scripts live
 
