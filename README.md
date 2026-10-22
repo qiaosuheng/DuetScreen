@@ -563,6 +563,28 @@ python tools/check_cache_coverage.py \
 `missing=0` means the cache covers every training view. The prebuilt cache for the released split is
 available at https://doi.org/10.5281/zenodo.23537662 if you do not want to rebuild it.
 
+### One cache or several?
+
+Each invocation writes **one** cache for its input; nothing is merged automatically.
+
+- training only → build from `variants_data.pkl`;
+- inference only → build from the FASTA you will score;
+- both → either build once from a combined input, or merge the two pickles (keys are DNA strings):
+
+```python
+import pickle
+
+merged = {}
+for path in ["protein_seg_cache_train.pkl", "protein_seg_cache_test.pkl"]:
+    merged.update(pickle.load(open(path, "rb")))
+pickle.dump(merged, open("protein_seg_cache_35m.pkl", "wb"), protocol=4)
+print(len(merged), "sequences")
+```
+
+The released 979 MB cache is such a superset: it was built once from a combined record set and covers
+59,398 sequences (training views plus test/species/family cohorts). It is not the result of two runs
+merging themselves.
+
 ## Predict
 
 The checkpoint path selects the seed: point `model_path` at
