@@ -444,7 +444,7 @@ then checks that `torch` and `duetscreen` import inside the container. A ready e
 `READY`.
 
 **Prerequisites**: Docker with GPU support (`--gpus all` requires an NVIDIA driver and the NVIDIA
-Container Toolkit), ~20 GB free disk, internet access for the first build and for the ESM2 download.
+Container Toolkit), ~20 GB free disk, and internet access for the first image build.
 
 ```
 DuetScreen/                  <- repository root; all default paths are relative to it
