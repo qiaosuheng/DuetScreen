@@ -23,6 +23,8 @@ SEED="${SEED:-42}"
 EPOCHS="${EPOCHS:-20}"
 BATCH="${BATCH:-16}"
 WORK="$HERE/runs/full_seed${SEED}"
+CACHE_DIR="${CACHE_DIR:-$HERE/runs/shared}"
+CACHE_SEED="${CACHE_SEED:-42}"
 DOCKER="${DOCKER:-docker}"
 
 say() { printf '\n== %s\n' "$*"; }
@@ -46,44 +48,45 @@ if [ -z "${ASSETS:-}" ]; then
 fi
 [ -n "${ASSETS:-}" ] || fail "NT-V3 encoder folder not found; set ASSETS=/path/to/assets containing NTv3_8M_pre"
 ASSETS="$(cd "$ASSETS" && pwd)"
-mkdir -p "$WORK"
+mkdir -p "$WORK" "$CACHE_DIR"
+CACHE_FILE="$CACHE_DIR/variants_data.pkl"
 
 "$DOCKER" image inspect "$IMAGE" >/dev/null 2>&1 || fail "image $IMAGE missing; run ./run_quickstart.sh once to build it"
 
-say "1/3 record cache"
-if [ -f "$WORK/variants_data.pkl" ]; then
-  echo "    reusing $WORK/variants_data.pkl"
+say "1/3 record cache (shared across training seeds)"
+if [ -f "$CACHE_FILE" ]; then
+  echo "    reusing $CACHE_FILE"
 else
   "$DOCKER" run --rm --entrypoint python \
-    -v "$DATA:/data:ro" -v "$WORK:/work" "$IMAGE" \
+    -v "$DATA:/data:ro" -v "$CACHE_DIR:/cache" "$IMAGE" \
     -m duetscreen.build_cache --train-fasta /data/train.fasta --val-fasta /data/val.fasta \
-    --output /work/variants_data.pkl --seed "$SEED" \
+    --output /cache/variants_data.pkl --seed "$CACHE_SEED" \
     || fail "cache build failed"
 fi
 
 say "2/3 protein cache coverage"
-COVER=(run --rm --entrypoint python -v "$WORK:/work:ro" -v "$ASSETS:/assets:ro" -v "$HERE/tools:/tools:ro")
+COVER=(run --rm --entrypoint python -v "$CACHE_DIR:/cache:ro" -v "$ASSETS:/assets:ro" -v "$HERE/tools:/tools:ro")
 if [ -f "$ASSETS/protein_seg_cache_35m.pkl" ] && "$DOCKER" "${COVER[@]}" "$IMAGE" /tools/check_cache_coverage.py \
-     --records /work/variants_data.pkl --cache /assets/protein_seg_cache_35m.pkl 2>/dev/null; then
+     --records /cache/variants_data.pkl --cache /assets/protein_seg_cache_35m.pkl 2>/dev/null; then
   echo "    shipped protein cache covers the records"
 else
-  echo "    building protein cache for $WORK (GPU)"
+  echo "    building protein cache for $CACHE_DIR (GPU)"
   "$DOCKER" run --rm --gpus all --entrypoint python \
-    -v "$WORK:/work" -v "$ASSETS:/assets:ro" "$IMAGE" \
-    -m duetscreen.protein_cache --input /work/variants_data.pkl \
-    --output /work/protein_seg_cache.pkl \
+    -v "$CACHE_DIR:/cache" -v "$ASSETS:/assets:ro" "$IMAGE" \
+    -m duetscreen.protein_cache --input /cache/variants_data.pkl \
+    --output /cache/protein_seg_cache.pkl \
     --esm2 facebook/esm2_t12_35M_UR50D --device cuda --batch-size 16 \
     || fail "protein cache build failed"
-  export PROTEIN_CACHE=/work/protein_seg_cache.pkl
+  export PROTEIN_CACHE=/cache/protein_seg_cache.pkl
 fi
 
 say "3/3 training (${EPOCHS} epochs, seed ${SEED})"
 CACHE_ENV=(-e DUETSCREEN_PROTEIN_SEG_CACHE=/assets/protein_seg_cache_35m.pkl)
 [ -n "${PROTEIN_CACHE:-}" ] && CACHE_ENV=(-e DUETSCREEN_PROTEIN_SEG_CACHE="$PROTEIN_CACHE")
 "$DOCKER" run --rm --gpus all \
-  -v "$WORK:/work" -v "$ASSETS:/assets:ro" -v "$DATA:/data:ro" \
+  -v "$WORK:/work" -v "$CACHE_DIR:/cache:ro" -v "$ASSETS:/assets:ro" -v "$DATA:/data:ro" \
   "${CACHE_ENV[@]}" "$IMAGE" \
-  --records /work/variants_data.pkl --output-dir "/work/seed${SEED}" \
+  --records /cache/variants_data.pkl --output-dir "/work/seed${SEED}" \
   --ntv3-model /assets/NTv3_8M_pre --seed "$SEED" \
   --epochs "$EPOCHS" --patience 5 --batch-size "$BATCH" --max-seq-len 2048 \
   "${EXTRA[@]}" \

@@ -86,13 +86,13 @@ cd DuetScreen
 |---|---|---|
 | `NTv3_8M_pre.zip` | https://doi.org/10.5281/zenodo.23535423 | unzip into `assets/` → `assets/NTv3_8M_pre/` |
 | `mixed pool.zip` | https://doi.org/10.5281/zenodo.23534656 | unzip into `data/mixed/` → `train.fasta`, `val.fasta`, `test.fasta` |
-| `variants_data_seed42.pkl` | https://doi.org/10.5281/zenodo.23537662 | rename to `runs/full_seed42/variants_data.pkl` |
+| `variants_data_seed42.pkl` | https://doi.org/10.5281/zenodo.23537662 | rename to `runs/shared/variants_data.pkl` |
 | `protein_seg_cache_35m.7z.001–032` | https://doi.org/10.5281/zenodo.23537662 | extract → `assets/protein_seg_cache_35m.pkl` |
 | `best_nucleotide_v3_mamba_model.pth` (optional) | https://doi.org/10.5281/zenodo.23535423 | `assets/checkpoints/seed42/best_nucleotide_v3_mamba_model.pth` |
 | `DuetScreen_ToySubset.zip` (optional toy) | https://doi.org/10.5281/zenodo.23538086 | unzip into `toy/` |
 
 ```bash
-mkdir -p assets data/mixed runs/full_seed42 assets/checkpoints/seed42
+mkdir -p assets data/mixed runs/shared assets/checkpoints/seed42
 
 # nucleotide encoder
 wget -O /tmp/NTv3_8M_pre.zip "https://zenodo.org/records/23535423/files/NTv3_8M_pre.zip?download=1"
@@ -103,7 +103,7 @@ wget -O /tmp/mixed_pool.zip "https://zenodo.org/records/23534656/files/mixed%20p
 unzip -o /tmp/mixed_pool.zip -d data/mixed
 
 # full training caches (optional if you let the training script rebuild them)
-wget -O runs/full_seed42/variants_data.pkl \
+wget -O runs/shared/variants_data.pkl \
   "https://zenodo.org/records/23537662/files/variants_data_seed42.pkl?download=1"
 # protein cache: download all 32 volumes, then
 7z x protein_seg_cache_35m.7z.001 -oassets/
@@ -142,8 +142,8 @@ import. It is not required before training.
 DATA=data/mixed ./run_full_training.sh
 ```
 
-The script is at the repository root. It builds `runs/full_seed42/variants_data.pkl` and
-`runs/full_seed42/protein_seg_cache.pkl` when they are absent (several hours), or reuses the files
+The script is at the repository root. It builds `runs/shared/variants_data.pkl` and
+`runs/shared/protein_seg_cache.pkl` when they are absent (several hours), or reuses the files
 placed in step 2. The checkpoint is written to
 `runs/full_seed42/seed42/best_nucleotide_v3_mamba_model.pth`.
 
@@ -159,7 +159,7 @@ CACHE=assets/protein_seg_cache_35m.pkl \
 `run_eval.sh` is at the repository root. It prints accuracy, F1, precision, recall, AUROC and AUPRC,
 and writes `out_eval/detailed_results.json` plus `out_eval/predictions_threshold_0.5.csv`. If you
 did not download the full protein cache, use the one produced by training:
-`CACHE=runs/full_seed42/protein_seg_cache.pkl`.
+`CACHE=runs/shared/protein_seg_cache.pkl`.
 
 On Windows use `.\run_eval.ps1 -Model ... -Data ... -Cache ...`; if PowerShell blocks scripts, add
 `-ExecutionPolicy Bypass` by starting it as
@@ -244,9 +244,10 @@ DuetScreen/
 │       ├── val.fasta
 │       └── test.fasta
 └── runs/
+    ├── shared/
+    │   ├── variants_data.pkl    training views, shared by all seeds
+    │   └── protein_seg_cache.pkl
     └── full_seed42/
-        ├── variants_data.pkl    training views built from train/val
-        ├── protein_seg_cache.pkl
         └── seed42/
             ├── best_nucleotide_v3_mamba_model.pth
             ├── nucleotide_v3_training_log.json
@@ -306,13 +307,17 @@ seed-42 checkpoint can be used for prediction or as a starting point.
 
 ## Full training caches
 
-The seed-42 training-view cache and the complete ESM2 protein cache are archived at
-**https://doi.org/10.5281/zenodo.23537662**:
+The shared training-view cache (generated with seed 42) and the complete ESM2 protein cache are
+archived at **https://doi.org/10.5281/zenodo.23537662**:
 
 | File | Contents |
 |---|---|
-| `variants_data_seed42.pkl` | full training-view cache built with `build_cache --seed 42` (16,738 records) |
+| `variants_data_seed42.pkl` | shared training-view cache built with `build_cache --seed 42` (16,738 records); reused by every training seed |
 | `protein_seg_cache_35m.7z.001` … `.032` | 16-segment ESM2-35M cache, split into 32 volumes (about 820 MB compressed, 979 MB extracted) |
+
+The `seed42` in the filename is the **generation** seed for the views, not a restriction on training:
+`run_full_training.sh` builds the views once and reuses them for seeds 42–51, matching the paper's
+protocol. Only the model initialization and batch order change with the training seed.
 
 **Full training needs both files.** The toy workflow does **not** use this record: it only needs the
 toy archive (`DuetScreen_ToySubset.zip`), which already contains its own small view and protein
@@ -335,7 +340,7 @@ Place the extracted cache and the training views where `run_full_training.sh` lo
 assets/
   protein_seg_cache_35m.pkl        extracted from the 7z volumes
 runs/
-  full_seed42/
+  shared/
     variants_data.pkl              renamed from variants_data_seed42.pkl
 ```
 
@@ -529,18 +534,22 @@ bring new data, or when you want to reuse a cache across runs.
 # 1) build the supervised training views from your train/val split
 python -m duetscreen.build_cache \
     --train-fasta data/mixed/train.fasta --val-fasta data/mixed/val.fasta \
-    --output runs/full_seed42/variants_data.pkl --seed 42
+    --output runs/shared/variants_data.pkl --seed 42
 
 # 2) embed every sequence in that view cache (originals + semantic/confusion views)
 python -m duetscreen.protein_cache \
-    --input  runs/full_seed42/variants_data.pkl \
-    --output runs/full_seed42/protein_seg_cache.pkl \
+    --input  runs/shared/variants_data.pkl \
+    --output runs/shared/protein_seg_cache.pkl \
     --esm2   facebook/esm2_t12_35M_UR50D \
     --device cuda --batch-size 16
 
 # 3) point the trainer at it
-export DUETSCREEN_PROTEIN_SEG_CACHE=$PWD/runs/full_seed42/protein_seg_cache.pkl
+export DUETSCREEN_PROTEIN_SEG_CACHE=$PWD/runs/shared/protein_seg_cache.pkl
 ```
+
+Build this **once** and reuse it for every training seed (`SEED=42`, `43`, …): the view-generation
+seed is fixed at 42, while the training seed only changes initialization, shuffling and dropout. Do
+not rerun `build_cache` per training seed; different views would miss the cache.
 
 Passing `variants_data.pkl` (not just the FASTA) is important: views generated with another seed are
 different sequences and will miss the cache.
@@ -567,8 +576,8 @@ Records without a stop-free interval of at least 30 nt receive a zero vector; th
 
 ```bash
 python tools/check_cache_coverage.py \
-  --records runs/full_seed42/variants_data.pkl \
-  --cache   runs/full_seed42/protein_seg_cache.pkl
+  --records runs/shared/variants_data.pkl \
+  --cache   runs/shared/protein_seg_cache.pkl
 ```
 
 `missing=0` means the cache covers every training view. The prebuilt cache for the released split is
@@ -577,6 +586,11 @@ available at https://doi.org/10.5281/zenodo.23537662 if you do not want to rebui
 ### One cache or several?
 
 Each invocation writes **one** cache for its input; nothing is merged automatically.
+
+For training, build the view cache **once** and reuse it for every training seed:
+`build_cache --seed 42` fixes the view-generation randomness, while the training `--seed` changes
+only initialization, shuffling and dropout. The released `variants_data_seed42.pkl` is this shared
+cache, not a seed-specific file.
 
 - training only → build from `variants_data.pkl`;
 - inference only → build from the FASTA you will score;
@@ -617,7 +631,7 @@ You can verify the split directly:
 import pickle
 from Bio import SeqIO
 
-records = pickle.load(open("runs/full_seed42/variants_data.pkl", "rb"))
+records = pickle.load(open("runs/shared/variants_data.pkl", "rb"))
 train = {r["original_seq"].upper() for r in records}
 test = {str(r.seq).upper() for r in SeqIO.parse("data/mixed/test.fasta", "fasta")}
 print("overlap", len(train & test))      # expected: 0
