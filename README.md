@@ -53,6 +53,25 @@ Every command below is run from the repository root, i.e. the directory that con
 are **not** on `PATH`; call them with their relative path (`./run_full_training.sh`) from that
 directory.
 
+### 0. Prerequisites
+
+- Docker Desktop (Windows/macOS) or Docker Engine (Linux), with GPU support.
+- NVIDIA driver and the NVIDIA Container Toolkit.
+- One GPU with at least 8 GB of memory; about 20 GB free disk.
+
+Verify that Docker can see the GPU before doing anything else:
+
+```bash
+docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi
+```
+
+If this command fails, fix Docker GPU support first (Docker Desktop settings → Resources → WSL
+integration / GPU, or install the NVIDIA Container Toolkit on Linux); the rest of the workflow will
+not work without it.
+
+The one-command scripts below call `docker`. The native Python path in **Environment** is an
+alternative for users who prefer to run the `python -m duetscreen.*` commands directly.
+
 ### 1. Clone
 
 ```bash
@@ -97,6 +116,11 @@ is independent and contains its own `toy/data/` and `toy/cache/`.
 ```bash
 docker build -t duetscreen-release:1.0 .
 ```
+
+The `Dockerfile` **is** the environment configuration: it pins Python 3.11, PyTorch 2.8.0 with
+CUDA 12.8, transformers 4.57.1 and compiles `mamba-ssm 2.2.6.post3` / `causal-conv1d 1.5.3.post1`.
+You do not need to edit it; build it once (about 20 minutes the first time) and reuse the image for
+training and evaluation.
 
 `./run_quickstart.sh` is an optional environment check; it builds the same image and verifies the
 import. It is not required before training.
