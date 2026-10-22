@@ -1,6 +1,6 @@
 # Release validation and verification scope
 
-Documentation revision: 2026-10-22 (release tag `v1.0.26`). The execution records
+Documentation revision: 2026-10-22 (release tag `v1.0.27`). The execution records
 quoted below were produced on 2026-10-17 with the release build of that date. They
 were **not** re-executed for this documentation revision; treat them as historical
 evidence, not as a fresh validation of the current commit.
@@ -13,6 +13,20 @@ evidence, not as a fresh validation of the current commit.
 | Environment build and package import | Basic usability of the pinned environment | Historical record, 2026-10-17 |
 | Small execution / prediction checks | That the recorded commands ran in the recorded environment | Historical record, 2026-10-17 |
 | Full training to convergence and paper-table reproduction | Numerical reproduction of the paper | **Not re-run** for this revision |
+
+## Release-material checks (2026-10-22)
+
+| Item | Result |
+|---|---|
+| Git modes for the seven shell entry points | `100755` in the index and in the GitHub tree |
+| Shell line endings in the index | LF |
+| `git diff --check` | Passed |
+| Local Markdown links in `README.md` | Resolved; no missing local targets |
+| `assets_manifest.json` | Parsed; 5 public assets plus local outputs |
+| Toy archive extraction | Only `data/` and `cache/` extracted; tracked README/scripts unchanged |
+| Quickstart description | Consistent across README, CHECKS, TROUBLESHOOTING and ASSISTED_SETUP |
+
+These are documentation and packaging checks, not model executions.
 
 ## Current public artifacts
 

@@ -30,5 +30,5 @@ record.
 
 Before redistributing the checkpoint or the NT-V3 archive, confirm that the
 upstream NT-V3 terms permit the intended distribution and use. This table is a
-release note, not a legal conclusion; unresolved licence questions are listed in
-the internal release report.
+release note, not a legal conclusion; if the upstream terms do not permit the
+intended use, do not redistribute the archive.

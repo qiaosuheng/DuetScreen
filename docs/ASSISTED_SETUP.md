@@ -11,8 +11,9 @@ below are vendor-neutral — no particular product is required or endorsed.
 > Then:
 > 1. Check that Docker is installed and running, and that GPU containers work
 >    (`docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi`).
-> 2. Make sure the folder layout is `release/DuetScreen/` and `release/assets/`.
->    Put the NT-V3 encoder folder in `assets/NTv3_8M_pre`.
+> 2. Make sure the repository root contains `assets/NTv3_8M_pre`, with `data/`,
+>    `toy/` and `runs/` as needed. The default layout keeps `assets/` inside the
+>    repository; do not create a separate top-level assets directory beside it.
 > 3. Run `./run_quickstart.sh` (or the `.ps1` wrapper on Windows) and show me
 >    the complete output.
 > 4. If any step fails, use the messages in `TROUBLESHOOTING.md` to diagnose it,

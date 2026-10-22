@@ -47,6 +47,14 @@ is not a supported path.
 | All scores ≈ 0.5 | The protein cache has no entry for your sequences (no stop-free ORF ≥ 30 nt), or `DUETSCREEN_PROTEIN_SEG_CACHE` is unset. Build a cache for them with `duetscreen.protein_cache`. |
 | A few scores differ from recorded values | Floating-point nondeterminism across GPUs; aggregate metrics are the intended comparison. |
 
+## Toy
+
+| symptom | fix |
+|---|---|
+| `toy/data` or `toy/cache` missing | Extract only those two directories from `DuetScreen_ToySubset.zip`; see `toy/README.md`. |
+| `toy/README.md` or scripts look older after unpacking | The v1 archive contains wrapper files. Restore the repository copies with `git checkout -- toy/README.md toy/run_toy.sh toy/run_toy.ps1`; do not extract those files from the archive. |
+| `run_toy.sh` fails in Git Bash on Windows | Use `run_toy.ps1` in a Windows terminal; the v1 archive's Bash script predates the path fix. |
+
 ## Windows notes
 
 - Bash blocks target Linux/WSL2 or Git Bash; PowerShell blocks target the `.ps1`

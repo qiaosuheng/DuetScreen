@@ -19,7 +19,7 @@ expressed, viable or functional.
 
 - [Architecture](#architecture)
 - [Start here: three entry points](#start-here-three-entry-points)
-- [First-time setup: download → train → metrics](#first-time-setup-download--train--metrics)
+- [Full training: download → train → metrics](#full-training-download--train--metrics)
 - [What is included](#what-is-included)
 - [Project layout after setup](#project-layout-after-setup)
 - [Data availability](#data-availability)
@@ -30,7 +30,7 @@ expressed, viable or functional.
 - [Quickstart](#quickstart)
 - [Toy validation (1 epoch)](#toy-validation-1-epoch)
 - [Training from the public dataset](#full-retraining-from-the-public-dataset)
-- [Prediction](#predict)
+- [Predict with the released checkpoint](#predict-with-the-released-checkpoint)
 - [Training](#train)
 - [Output files](#output-files)
 - [Configuration reference](#configuration-reference)
@@ -53,9 +53,9 @@ contrastive projection.
 
 | Goal | Entry | What it needs |
 |---|---|---|
-| See the workflow run quickly | **Quick toy demo** → [`toy/README.md`](toy/README.md), archive https://doi.org/10.5281/zenodo.23538086 | Docker image built; about two minutes after the environment is ready. Independent of the full dataset and full caches. Toy metrics are a pipeline demonstration, not paper results. |
-| Score sequences with the published model | **Predict with the released checkpoint** → record https://doi.org/10.5281/zenodo.23535423, then `./run_eval.sh` (or the `duetscreen.predict` CLI) | Seed-42 checkpoint, `NTv3_8M_pre`, and a protein cache; **no training required**. |
-| Retrain with the released configuration | **Full training** → record https://doi.org/10.5281/zenodo.23537662 plus `./run_full_training.sh` | Dataset, NT-V3 encoder, shared view cache and protein cache; GPU; hours. |
+| See the workflow run quickly | **Quick toy demo** → [`toy/README.md`](toy/README.md), archive https://doi.org/10.5281/zenodo.23538086 | Docker image built; about two minutes after the environment is ready. Independent of the full dataset and full caches. Extract only `data/` and `cache/` from the v1 archive. Toy metrics are a pipeline demonstration, not paper results. |
+| Score sequences with the published model | **Predict with the released checkpoint** → [prediction guide](#predict-with-the-released-checkpoint), record https://doi.org/10.5281/zenodo.23535423 | Seed-42 checkpoint, `NTv3_8M_pre`, and a protein cache; **no training required**. |
+| Retrain with the released configuration | **Full training** → [training guide](#full-training-download--train--metrics), record https://doi.org/10.5281/zenodo.23537662 | Dataset, NT-V3 encoder, shared view cache and protein cache; GPU; hours. |
 
 All three paths share the environment described in **Environment**. Run commands from
 the repository root unless a section says otherwise.
@@ -65,7 +65,10 @@ with WSL2 GPU support (Docker Desktop). macOS CUDA is not supported, and CPU-onl
 training is not a validated path. `bash` blocks target Linux, WSL2 or Git Bash;
 `powershell` blocks target the `.ps1` wrappers in a Windows terminal.
 
-## First-time setup: download → train → metrics
+## Full training: download → train → metrics
+
+This section is the **full-training path only**. The toy demo and prediction with the released
+checkpoint do not require the dataset, the caches or a training run; use the entries above for those.
 
 Every command below is run from the repository root, i.e. the directory that contains
 `run_full_training.sh`, `run_eval.sh` and `Dockerfile`. Scripts are **not** installed globally and
@@ -186,16 +189,26 @@ On Windows use `.\run_eval.ps1 -Model ... -Data ... -Cache ...`; if PowerShell b
 
 ### 6. Optional: toy check (about two minutes)
 
+The published toy archive is v1 and also contains older copies of `README.md`, `run_toy.sh`,
+`run_toy.ps1` and `expected_metrics.json`. Extract **only** its resources, so the repository scripts
+and documentation are not overwritten:
+
 ```bash
-unzip -o DuetScreen_ToySubset.zip -d toy/
+unzip -o DuetScreen_ToySubset.zip 'data/*' 'cache/*' -d toy/   # Linux / WSL2 / Git Bash
 ASSETS=assets ./toy/run_toy.sh
 ```
 
-`toy/run_toy.sh` lives in the `toy/` subdirectory and needs no full cache. The source tree contains
-only `toy/run_toy.sh`; `toy/data/` and `toy/cache/` appear after unpacking the toy archive.
+On Windows, extract to a temporary folder and copy only the two resource directories:
 
-On Windows use `.\toy\run_toy.ps1 -Assets assets`; if PowerShell blocks scripts, run it with
-`powershell -ExecutionPolicy Bypass -File .\toy\run_toy.ps1 -Assets assets`.
+```powershell
+Expand-Archive DuetScreen_ToySubset.zip -DestinationPath toy_tmp
+Copy-Item -Path toy_tmp\data,toy_tmp\cache -Destination toy\ -Recurse -Force
+Remove-Item toy_tmp -Recurse -Force
+```
+
+`toy/` already contains `README.md`, `run_toy.sh` and `run_toy.ps1`; the archive adds only `data/`
+and `cache/`. On Windows use `.\toy\run_toy.ps1 -Assets assets`; if PowerShell blocks scripts, run
+it with `powershell -ExecutionPolicy Bypass -File .\toy\run_toy.ps1 -Assets assets`.
 
 ### Where the scripts live
 
@@ -383,7 +396,8 @@ docker build -t duetscreen-release:1.0 .
 
 The image is based on `pytorch/pytorch:2.8.0-cuda12.8-cudnn9-runtime` and builds the Mamba kernels
 during the image build (about 20 minutes once). Only `Dockerfile` and `requirements.txt` are shipped;
-the image itself is built locally, and no prebuilt image or weight archive is distributed.
+the image itself is built locally. Pretrained weights are distributed through the Zenodo record, not
+inside this code repository.
 
 ### Option B: native Python
 
@@ -433,20 +447,24 @@ then checks that `torch` and `duetscreen` import inside the container. A ready e
 Container Toolkit), ~20 GB free disk, internet access for the first build and for the ESM2 download.
 
 ```
-release/
-  DuetScreen/          <- this package (docker build here)
+DuetScreen/                  <- repository root; all default paths are relative to it
+  README.md
+  Dockerfile
   assets/
-    NTv3_8M_pre/       <- Hugging Face download
+    NTv3_8M_pre/             <- extracted encoder folder
+  data/
+  toy/
+  runs/
 ```
 
 ```bash
-cd DuetScreen
-docker build -t duetscreen-release:1.0 .   # about 20 minutes; compiles the Mamba kernels once
+docker build -t duetscreen-release:1.0 .   # from the repository root; about 20 minutes once
 ```
 
 Training and prediction commands are documented below; the wrappers in `docker/` run the same steps
 inside the container. Only `Dockerfile` and `requirements.txt` are shipped; the image is built
-locally.
+locally. `ASSETS=/path/to/assets` remains available as an optional override, but the default
+layout is `assets/` inside the repository.
 
 **Scoring sequences outside the released record set**: the protein channel reads
 a cache keyed by exact DNA sequence. Build a cache for your own records first
@@ -471,8 +489,10 @@ condition. Rebuilding a cache with this module reproduces rows to fp16 precision
 
 A fixed 120/40/40 subset with precomputed training views and protein cache is distributed
 separately (`DuetScreen_ToySubset.zip`, https://doi.org/10.5281/zenodo.23538086). The toy archive is
-self-contained: it does **not** require the full cache record. Unpack it into `toy/` so that
-`toy/data/` and `toy/cache/` exist, then run:
+self-contained: it does **not** require the full cache record. The published archive is v1 and also
+contains older wrapper files; extract only `data/` and `cache/` into `toy/` so that the repository
+versions of the README and scripts are preserved. [`toy/README.md`](toy/README.md) gives the exact
+commands for Linux/WSL and Windows. Then run:
 
 ```bash
 ASSETS=assets ./toy/run_toy.sh
@@ -667,36 +687,74 @@ test = {str(r.seq).upper() for r in SeqIO.parse("data/mixed/test.fasta", "fasta"
 print("overlap", len(train & test))      # expected: 0
 ```
 
-## Predict
+## Predict with the released checkpoint
 
-The checkpoint path selects the seed: point `model_path` at
-`runs/full_seed<SEED>/seed<SEED>/best_nucleotide_v3_mamba_model.pth` (training output) or at
-`assets/checkpoints/seed42/best_nucleotide_v3_mamba_model.pth` (released checkpoint). There is no
-automatic seed lookup and no need to `cd` when the path is correct; the loader prints the seed stored
-inside the checkpoint.
+This entry scores sequences with the public seed-42 model. It does **not** require the benchmark
+dataset, a cache build or any training run.
 
-```python
-from duetscreen.predict import SimpleNTv3Predictor
+### Required files and default placement
 
-p = SimpleNTv3Predictor(
-    'runs/full_seed42/seed42/best_nucleotide_v3_mamba_model.pth',
-    output_dir='out', threshold=0.5,
-    ntv3_model='assets/NTv3_8M_pre')
-p.predict('records.fasta', batch_size=64, threshold=0.5)
-```
+| Resource | Source | Default placement |
+|---|---|---|
+| Seed-42 checkpoint | https://doi.org/10.5281/zenodo.23535423 | `assets/checkpoints/seed42/best_nucleotide_v3_mamba_model.pth` |
+| NT-V3 encoder | `NTv3_8M_pre.zip` in the same record | `assets/NTv3_8M_pre/` |
+| Protein cache | https://doi.org/10.5281/zenodo.23537662 (extract the 32 volumes) | `assets/protein_seg_cache_35m.pkl` |
+| Input FASTA | your sequences | any path; examples below use `data/input.fasta` |
+| Docker image | built from this repository | `duetscreen-release:1.0` |
+
+### Plain prediction (labels not required)
+
+`duetscreen.predict` writes per-record probabilities. This is the right entry when you only have
+sequences: no labels means no metrics, and that is not a failure. The command below assumes the input
+is at `data/input.fasta`; change the `-v` mount if it is elsewhere.
 
 ```bash
-python -m duetscreen.predict --fasta records.fasta \
-  --model runs/full_seed42/seed42/best_nucleotide_v3_mamba_model.pth \
-  --ntv3-model assets/NTv3_8M_pre --output-dir out --threshold 0.5
+mkdir -p out_predict
+docker run --rm --gpus all \
+  -v "$PWD/assets:/assets:ro" -v "$PWD/data:/data:ro" -v "$PWD/out_predict:/out" \
+  -e DUETSCREEN_PROTEIN_SEG_CACHE=/assets/protein_seg_cache_35m.pkl \
+  --entrypoint python duetscreen-release:1.0 -m duetscreen.predict \
+  --fasta /data/input.fasta \
+  --model /assets/checkpoints/seed42/best_nucleotide_v3_mamba_model.pth \
+  --ntv3-model /assets/NTv3_8M_pre --output-dir /out --threshold 0.5
 ```
 
-For a labelled test FASTA, `./run_eval.sh` at the repository root wraps this call and prints
-accuracy, F1, AUROC and AUPRC; see **First-time setup** for the required `MODEL`, `DATA` and `CACHE`
-variables.
+Results: `out_predict/predictions_threshold_0.5.csv` (per-record probability and predicted label).
+Run this from the repository root; on Windows use WSL2 or Git Bash for this `bash` block.
 
-Outputs per-record scores plus a metrics block when labels are present: IDs with
-`pos_` / `neg_` prefixes, or headers carrying `|label:1` / `|label:0`.
+### Labelled evaluation (metrics)
+
+If the FASTA IDs carry labels (`pos_` / `neg_` prefixes, or `|label:1` / `|label:0`), use the
+evaluation wrapper instead. It runs the same prediction and prints ACC, F1, precision, recall, AUROC
+and AUPRC, and writes `out_eval/detailed_results.json`.
+
+```bash
+MODEL=assets/checkpoints/seed42/best_nucleotide_v3_mamba_model.pth \
+DATA=data/test.fasta \
+CACHE=assets/protein_seg_cache_35m.pkl \
+./run_eval.sh
+```
+
+On Windows:
+
+```powershell
+.\run_eval.ps1 -Model assets\checkpoints\seed42\best_nucleotide_v3_mamba_model.pth `
+  -Data data\test.fasta -Cache assets\protein_seg_cache_35m.pkl
+```
+
+If PowerShell blocks scripts, start it with `powershell -ExecutionPolicy Bypass -File .\run_eval.ps1 ...`.
+
+### Using a locally trained checkpoint (supplemental)
+
+Replace `MODEL` with `runs/full_seed<ID>/seed<ID>/best_nucleotide_v3_mamba_model.pth` in either
+command. Local checkpoints are training outputs, not the public seed-42 checkpoint; the same input
+and output rules apply.
+
+### Seed selection
+
+The checkpoint path selects the seed; there is no automatic lookup. The public record contains seed
+42 only. The loader prints the seed stored inside the checkpoint, which is useful when several local
+runs exist.
 
 | Argument | Required | Meaning |
 |---|---|---|

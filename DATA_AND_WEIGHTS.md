@@ -16,6 +16,10 @@ Only the **seed-42** checkpoint is public. Seeds 43–51 are not part of the pub
 weight record. The training-view cache is shared: it was generated once with seed 42
 and reused for every training seed.
 
+The toy archive is published as v1 and also contains older wrapper files. Extract only
+`data/` and `cache/` into `toy/`; keep the repository `toy/README.md`, `run_toy.sh` and
+`run_toy.ps1`. `toy/README.md` gives the exact platform-specific commands.
+
 Exact sizes and SHA-256 values are in `assets_manifest.json`.
 
 ## Placement

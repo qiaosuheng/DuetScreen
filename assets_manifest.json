@@ -45,11 +45,22 @@
    "name": "Toy subset archive",
    "record": "https://doi.org/10.5281/zenodo.23538086",
    "file": "DuetScreen_ToySubset.zip",
-   "path_when_placed": "toy/",
+   "path_when_placed": [
+    "toy/data/",
+    "toy/cache/"
+   ],
    "role": "120/40/40 demo with its own view and protein caches",
    "size_bytes": 3547591,
    "sha256": "d071d9dca4d39d53b2aa00d18441e5206c72f2dee1faf78e12a44f6ee5e5a202",
-   "md5_zenodo": "12d094499e38149e3f27596b778efcd1"
+   "md5_zenodo": "12d094499e38149e3f27596b778efcd1",
+   "extract": "Extract only data/ and cache/; do not overwrite repository toy/README.md, run_toy.sh, run_toy.ps1.",
+   "archive_wrapper_files": [
+    "README.md",
+    "run_toy.sh",
+    "run_toy.ps1",
+    "expected_metrics.json"
+   ],
+   "note": "Published v1 archive. The wrapper files are older than the repository and are not used."
   }
  ],
  "dataset_record": {
