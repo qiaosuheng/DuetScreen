@@ -18,6 +18,7 @@ expressed, viable or functional.
 ## Table of contents
 
 - [Architecture](#architecture)
+- [Start here: three entry points](#start-here-three-entry-points)
 - [First-time setup: download → train → metrics](#first-time-setup-download--train--metrics)
 - [What is included](#what-is-included)
 - [Project layout after setup](#project-layout-after-setup)
@@ -34,6 +35,7 @@ expressed, viable or functional.
 - [Output files](#output-files)
 - [Configuration reference](#configuration-reference)
 - [FAQ](#faq)
+- [Verification scope](#verification-scope)
 - [Citation and license](#citation-and-license)
 
 ## Architecture
@@ -47,6 +49,22 @@ stream (adapted NT-V3, state-space and convolution branches, token fusion) and t
 fused into a joint representation, followed by the classification head and the training-only
 contrastive projection.
 
+## Start here: three entry points
+
+| Goal | Entry | What it needs |
+|---|---|---|
+| See the workflow run quickly | **Quick toy demo** → [`toy/README.md`](toy/README.md), archive https://doi.org/10.5281/zenodo.23538086 | Docker image built; about two minutes after the environment is ready. Independent of the full dataset and full caches. Toy metrics are a pipeline demonstration, not paper results. |
+| Score sequences with the published model | **Predict with the released checkpoint** → record https://doi.org/10.5281/zenodo.23535423, then `./run_eval.sh` (or the `duetscreen.predict` CLI) | Seed-42 checkpoint, `NTv3_8M_pre`, and a protein cache; **no training required**. |
+| Retrain with the released configuration | **Full training** → record https://doi.org/10.5281/zenodo.23537662 plus `./run_full_training.sh` | Dataset, NT-V3 encoder, shared view cache and protein cache; GPU; hours. |
+
+All three paths share the environment described in **Environment**. Run commands from
+the repository root unless a section says otherwise.
+
+**Platforms and terminals.** Supported: Linux with an NVIDIA GPU, or Windows 11
+with WSL2 GPU support (Docker Desktop). macOS CUDA is not supported, and CPU-only
+training is not a validated path. `bash` blocks target Linux, WSL2 or Git Bash;
+`powershell` blocks target the `.ps1` wrappers in a Windows terminal.
+
 ## First-time setup: download → train → metrics
 
 Every command below is run from the repository root, i.e. the directory that contains
@@ -56,7 +74,8 @@ directory.
 
 ### 0. Prerequisites
 
-- Docker Desktop (Windows/macOS) or Docker Engine (Linux), with GPU support.
+- Linux with an NVIDIA GPU, or Windows 11 with WSL2 GPU support (Docker Desktop). macOS with
+  CUDA is not supported.
 - NVIDIA driver and the NVIDIA Container Toolkit.
 - One GPU with at least 8 GB of memory; about 20 GB free disk.
 
@@ -330,7 +349,7 @@ looks up sequences present in `variants_data.pkl`, and the extra keys are never 
 Extract the protein cache from the first volume:
 
 ```bash
-7z x protein_seg_cache_35m.7z.001 -o./caches     # Linux / macOS (p7zip)
+7z x protein_seg_cache_35m.7z.001 -o./caches     # Linux / WSL2 (p7zip)
 # Windows: 7-Zip -> Extract Here on protein_seg_cache_35m.7z.001
 ```
 
@@ -391,8 +410,12 @@ A four-step environment check: Docker, the NT-V3 encoder folder, the image build
 import. It does not download data or weights and does not run a prediction.
 
 ```bash
-./run_quickstart.sh                          # Linux / macOS / Git Bash
+./run_quickstart.sh                          # Linux / WSL2 / Git Bash
 ASSETS=/path/to/assets ./run_quickstart.sh   # folder containing NTv3_8M_pre/
+```
+
+```powershell
+.\run_quickstart.ps1                         # Windows terminal
 ```
 
 A Windows wrapper is included with the same options.
@@ -450,11 +473,12 @@ self-contained: it does **not** require the full cache record. Unpack it into `t
 ASSETS=assets ./toy/run_toy.sh
 ```
 
-The script trains for one epoch on the toy split and predicts the toy test set. On one GPU this
-takes about two minutes and exercises data loading, view construction, the protein cache, training,
-checkpoint writing and prediction end to end. Sanity values for seed 42 are validation accuracy
-0.8125 and validation AUROC 0.5876. This is a pipeline check, not a performance benchmark: the
-one-epoch test predictions are expected to be close to all-positive or all-negative.
+The script trains for one epoch on the toy split and predicts the toy test set. After the Docker
+image has been built, this takes about two minutes on one GPU and exercises data loading, view
+construction, the protein cache, training, checkpoint writing and prediction end to end. Sanity
+values for seed 42 are validation accuracy 0.8125 and validation AUROC 0.5876. These are demo
+reference values, not paper results; the one-epoch test predictions are expected to be close to
+all-positive or all-negative.
 
 ## Full retraining from the public dataset
 
@@ -515,8 +539,9 @@ one-step `--smoke` check; the full recipe expects the complete split.
 | ESM2-35M (`esm2_t12_35M_UR50D`) | frozen protein encoder | `facebook/esm2_t12_35M_UR50D` on Hugging Face |
 | trained checkpoint | needed for prediction; produced by the training recipe | your own run |
 
-`assets_manifest.json` records the expected file names and SHA-256 values for the
-encoder folder and, when present, the protein cache and checkpoints of a local run.
+`assets_manifest.json` separates the **public download assets** (checkpoint, encoder archive, view
+cache, protein cache, toy archive) from **local outputs** produced by training or evaluation, and
+records sizes and hashes for the public files.
 
 ## Build the protein cache (ESM2-35M)
 
@@ -665,8 +690,8 @@ For a labelled test FASTA, `./run_eval.sh` at the repository root wraps this cal
 accuracy, F1, AUROC and AUPRC; see **First-time setup** for the required `MODEL`, `DATA` and `CACHE`
 variables.
 
-Outputs per-record scores plus a metrics block when labels are present in the
-FASTA headers (`|label:1` / `|label:0`).
+Outputs per-record scores plus a metrics block when labels are present: IDs with
+`pos_` / `neg_` prefixes, or headers carrying `|label:1` / `|label:0`.
 
 | Argument | Required | Meaning |
 |---|---|---|
@@ -758,12 +783,20 @@ heads, batch 16, at most 20 epochs with patience 5, maximum 2,048 bp input.
 
 **Where is the dataset?** Zenodo DOI [10.5281/zenodo.23534656](https://doi.org/10.5281/zenodo.23534656).
 
+## Verification scope
+
+`CHECKS.md` separates documentation-level checks, historical environment/execution
+records (17 October 2026) and what has not been re-run. The current documentation
+revision did not repeat full 20-epoch training or paper-table reproduction; the
+historical records are quoted as evidence for the date and build they describe, not
+as a fresh validation of the current commit.
+
 ## Citation and license
 
 If you use DuetScreen, please cite the manuscript (citation details to be added upon publication)
 and the Zenodo dataset record.
 
-See `LICENSE` (MIT for this code) and `THIRD_PARTY.md` for the licences of the
-encoder weights and dependencies. Encoder weights retain their upstream
-licences. The separate assets archive includes the NT-V3 checkpoint; encoder
-weights are not embedded in this source-code archive.
+Code is MIT (`LICENSE`). Author-created data, splits, caches and the seed-42 checkpoint are CC BY
+4.0 as stated on their Zenodo records. Encoder weights and third-party dependencies retain their
+upstream terms; see `THIRD_PARTY.md`. The NT-V3 archive is distributed through the checkpoint record,
+not relicensed by this repository.

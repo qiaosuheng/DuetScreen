@@ -12,9 +12,9 @@ below are vendor-neutral — no particular product is required or endorsed.
 > 1. Check that Docker is installed and running, and that GPU containers work
 >    (`docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi`).
 > 2. Make sure the folder layout is `release/DuetScreen/` and `release/assets/`.
->    Put the NT-V3 encoder folder in `assets/NTv3_8M_pre`; the ESM2 cache is built automatically.
-> 3. Run `./run_quickstart.sh` (or `.\run_quickstart.ps1` on Windows) and show
->    me the complete output.
+>    Put the NT-V3 encoder folder in `assets/NTv3_8M_pre`.
+> 3. Run `./run_quickstart.sh` (or the `.ps1` wrapper on Windows) and show me
+>    the complete output.
 > 4. If any step fails, use the messages in `TROUBLESHOOTING.md` to diagnose it,
 >    one cause at a time, and tell me exactly which command you are changing.
 > Do not modify any file except by creating a scratch copy; do not download
@@ -23,26 +23,29 @@ below are vendor-neutral — no particular product is required or endorsed.
 
 ## What "success" looks like
 
-The script ends with:
+`run_quickstart.sh` is an environment check. Success ends with:
 
 ```
-PASS: 8 records match within 0.002 (max |d| ...)
-ok   smoke == passed
-ok   downstream parameters == 2987761
-ok   encoder trainable == 2763264
-ok   finite loss
-ALL CHECKS PASSED
+READY
 ```
 
-This reports agreement with the eight stored example scores and successful
-execution of the single-step training check. It does not retrain the published
-checkpoints or reproduce all benchmark results. The separate one-epoch check
-in `CHECKS.md` produced execution-check outputs that are not included among
-the checkpoint you trained.
+and, before that, a line confirming the package import inside the container
+(`duetscreen import OK`). It does **not** run a prediction, compute metrics or
+train a model.
+
+For the other entry points:
+
+- labelled evaluation: `./run_eval.sh` with `MODEL`, `DATA`, `CACHE`;
+- toy workflow: `./toy/run_toy.sh` after unpacking the toy archive;
+- full training: `./run_full_training.sh` with `DATA=data/mixed`.
+
+See `README.md` for the three entry points and `CHECKS.md` for the verification
+scope (historical execution records versus checks performed for the current
+documentation revision).
 
 ## If the assistant gets stuck
 
 - Ask it to print the last 50 lines of the failing command and match them
   against `TROUBLESHOOTING.md`.
-- The checks are independent: prediction (`step 4`) can be verified even if
-  training (`step 5`) is skipped on a CPU-only machine (`NO_GPU=1`).
+- The entries are independent: environment check, evaluation, toy and full
+  training can be diagnosed separately.

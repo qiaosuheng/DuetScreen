@@ -1,236 +1,82 @@
 {
- "schema_version": 1,
- "created": "2026-10-17",
- "assets": [
+ "schema_version": 2,
+ "updated": "2026-10-22",
+ "note": "Public release assets and local outputs are listed separately. Sizes and SHA-256 values were computed from the local copies used to prepare the release; Zenodo MD5 values are quoted where the upstream record publishes them.",
+ "public_assets": [
   {
-   "name": "DuetScreen seed 42 checkpoint",
-   "path": "checkpoints/seed42/best_nucleotide_v3_mamba_model.pth",
-   "role": "trained classifier + downstream weights",
-   "source": "released with the paper",
+   "name": "DuetScreen seed-42 checkpoint",
+   "record": "https://doi.org/10.5281/zenodo.23535423",
+   "file": "best_nucleotide_v3_mamba_model.pth",
+   "path_when_placed": "assets/checkpoints/seed42/best_nucleotide_v3_mamba_model.pth",
+   "role": "seed-42 trained classifier + downstream weights; prediction/evaluation entry",
    "size_bytes": 90228356,
    "sha256": "83275f37963eec617942bafb6a0099bdfaf089e9e4b0f6172078e106e02e66bb"
   },
   {
-   "name": "DuetScreen seed 43 checkpoint",
-   "path": "checkpoints/seed43/best_nucleotide_v3_mamba_model.pth",
-   "role": "trained classifier + downstream weights",
-   "source": "released with the paper",
-   "size_bytes": 90228356,
-   "sha256": "acbe6794d2cd727dc4f42e87fa4e3be588a2140ebda51428ddaf5e8e3de24710"
+   "name": "NT-V3-Pre-8M encoder archive",
+   "record": "https://doi.org/10.5281/zenodo.23535423",
+   "file": "NTv3_8M_pre.zip",
+   "path_when_placed": "assets/NTv3_8M_pre/",
+   "role": "frozen nucleotide encoder; extracted from the archive",
+   "upstream": "https://huggingface.co/InstaDeepAI/NTv3_8M_pre",
+   "size_bytes": 28644230,
+   "sha256": "84073f27c12140b84bb5c2bcf298f753185dedb96b5eb9d5738e7f1a98b8b0b0"
   },
   {
-   "name": "DuetScreen seed 44 checkpoint",
-   "path": "checkpoints/seed44/best_nucleotide_v3_mamba_model.pth",
-   "role": "trained classifier + downstream weights",
-   "source": "released with the paper",
-   "size_bytes": 90228356,
-   "sha256": "31331ce2283b13c347e485c8e341bf3bf1cdc27bf1e2d7ee56b8f1a186ae2210"
+   "name": "Shared training-view cache (seed-42 generation)",
+   "record": "https://doi.org/10.5281/zenodo.23537662",
+   "file": "variants_data_seed42.pkl",
+   "path_when_placed": "runs/shared/variants_data.pkl",
+   "role": "supervised views (originals + semantic/confusion) shared by training seeds 42-51",
+   "size_bytes": 60037433,
+   "sha256": "732626428311fc85978f271273f0aef5a1a20661514129550e90f2bdaac6148d"
   },
   {
-   "name": "DuetScreen seed 45 checkpoint",
-   "path": "checkpoints/seed45/best_nucleotide_v3_mamba_model.pth",
-   "role": "trained classifier + downstream weights",
-   "source": "released with the paper",
-   "size_bytes": 90228356,
-   "sha256": "2f4e1d274e89c414400b392191753c94378aed0807e48b1ef0703da4f78b9902"
-  },
-  {
-   "name": "DuetScreen seed 46 checkpoint",
-   "path": "checkpoints/seed46/best_nucleotide_v3_mamba_model.pth",
-   "role": "trained classifier + downstream weights",
-   "source": "released with the paper",
-   "size_bytes": 90228356,
-   "sha256": "21013bce61fcbc854775a44392753ac4c51236440ea98e2beec2d1188e64b107"
-  },
-  {
-   "name": "DuetScreen seed 47 checkpoint",
-   "path": "checkpoints/seed47/best_nucleotide_v3_mamba_model.pth",
-   "role": "trained classifier + downstream weights",
-   "source": "released with the paper",
-   "size_bytes": 90228356,
-   "sha256": "99a073bf5dc9199f39bf354429d0bf05f88de32939e3052f4d4913705daa8bcc"
-  },
-  {
-   "name": "DuetScreen seed 48 checkpoint",
-   "path": "checkpoints/seed48/best_nucleotide_v3_mamba_model.pth",
-   "role": "trained classifier + downstream weights",
-   "source": "released with the paper",
-   "size_bytes": 90228356,
-   "sha256": "71c1af756fcfc90cc872a74f7462e15ffecefa8525e87ef0fdb2a1ef4479c663"
-  },
-  {
-   "name": "DuetScreen seed 49 checkpoint",
-   "path": "checkpoints/seed49/best_nucleotide_v3_mamba_model.pth",
-   "role": "trained classifier + downstream weights",
-   "source": "released with the paper",
-   "size_bytes": 90228356,
-   "sha256": "81da1a1bea628e2ec45d225376df68e23bc7add44c4a17a045621c879189eac6"
-  },
-  {
-   "name": "DuetScreen seed 50 checkpoint",
-   "path": "checkpoints/seed50/best_nucleotide_v3_mamba_model.pth",
-   "role": "trained classifier + downstream weights",
-   "source": "released with the paper",
-   "size_bytes": 90228356,
-   "sha256": "f243a4175a959b61fe497354879e5350a65ffe5b23aff79e289ebed6bd12c018"
-  },
-  {
-   "name": "DuetScreen seed 51 checkpoint",
-   "path": "checkpoints/seed51/best_nucleotide_v3_mamba_model.pth",
-   "role": "trained classifier + downstream weights",
-   "source": "released with the paper",
-   "size_bytes": 90228356,
-   "sha256": "3fe0ff9bcfeb0589434e4334ce5f0c2021b6567a759239751a51c115e85abef0"
-  },
-  {
-   "name": "smoke.fasta",
-   "path": "smoke.fasta",
-   "role": "8-record prediction example",
-   "source": "released",
-   "size_bytes": 8327,
-   "sha256": "bf0cb39d7e74dcd025ffda85ae6bba22753eb211601685fca072ddf8d1fc6ff8"
-  },
-  {
-   "name": "mini_train_cache.pkl",
-   "path": "mini_train_cache.pkl",
-   "role": "training smoke cache (32 records)",
-   "source": "released",
-   "size_bytes": 155521,
-   "sha256": "dc102df20c03851ce93f46755f3c12913015e93bc83c9dcc1d73ee78705bdde1"
-  },
-  {
-   "name": "protein_seg_cache_35m.pkl",
-   "path": "protein_seg_cache_35m.pkl",
-   "role": "16-segment ESM2-35M cache for the released record set",
-   "source": "built with duetscreen.protein_cache from facebook/esm2_t12_35M_UR50D",
+   "name": "ESM2-35M 16-segment protein cache",
+   "record": "https://doi.org/10.5281/zenodo.23537662",
+   "file": "protein_seg_cache_35m.7z.001 ... .032",
+   "path_when_placed": "assets/protein_seg_cache_35m.pkl",
+   "role": "frozen ESM2 lookup table keyed by DNA; extract from volume .001",
    "size_bytes": 978964540,
-   "sha256": "4376cb58ce50dd1140f43e79330c0e45be039ef9bcde9e0424c753660abf1c93"
+   "sha256": "4376cb58ce50dd1140f43e79330c0e45be039ef9bcde9e0424c753660abf1c93",
+   "note": "logical size/hash of the extracted pickle; the record distributes 32 compressed volumes"
   },
   {
-   "name": "NT-V3-Pre-8M / config.json",
-   "path": "NTv3_8M_pre/config.json",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 1746,
-   "sha256": "f252069dd0aa178c58a5e817005d22922c040f068bf8e04d308fed2f403a5356"
+   "name": "Toy subset archive",
+   "record": "https://doi.org/10.5281/zenodo.23538086",
+   "file": "DuetScreen_ToySubset.zip",
+   "path_when_placed": "toy/",
+   "role": "120/40/40 demo with its own view and protein caches",
+   "size_bytes": 3547591,
+   "sha256": "d071d9dca4d39d53b2aa00d18441e5206c72f2dee1faf78e12a44f6ee5e5a202",
+   "md5_zenodo": "12d094499e38149e3f27596b778efcd1"
+  }
+ ],
+ "dataset_record": {
+  "record": "https://doi.org/10.5281/zenodo.23534656",
+  "files": [
+   "mixed pool.zip",
+   "strict pool.zip",
+   "holdout pool.zip"
+  ],
+  "note": "FASTA splits; place under data/mixed, data/strict or data/holdout. Hashes are published in the Zenodo record metadata."
+ },
+ "local_outputs": [
+  {
+   "path": "runs/shared/variants_data.pkl",
+   "role": "generated by duetscreen.build_cache; deterministic only for a fixed seed and code version"
   },
   {
-   "name": "NT-V3-Pre-8M / configuration_ntv3_pretrained.py",
-   "path": "NTv3_8M_pre/configuration_ntv3_pretrained.py",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 8090,
-   "sha256": "e210b5ec18ebe626d8dd91b408a83fc20afc59bf6c5382084ee91b9b8be69df3"
+   "path": "runs/shared/protein_seg_cache.pkl",
+   "role": "generated by duetscreen.protein_cache from the view cache"
   },
   {
-   "name": "NT-V3-Pre-8M / download_manifest.json",
-   "path": "NTv3_8M_pre/download_manifest.json",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 5743,
-   "sha256": "41e54d82ef501fcbc56a7e8d1e84b81c5351919e06f9a9a16b2a5aaef4e4637b"
+   "path": "runs/full_seed<ID>/seed<ID>/best_nucleotide_v3_mamba_model.pth",
+   "role": "locally trained checkpoint; not a fixed release hash"
   },
   {
-   "name": "NT-V3-Pre-8M / gitattributes",
-   "path": "NTv3_8M_pre/gitattributes",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 1519,
-   "sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361"
-  },
-  {
-   "name": "NT-V3-Pre-8M / MODEL-LICENSE.md",
-   "path": "NTv3_8M_pre/MODEL-LICENSE.md",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 9003,
-   "sha256": "2c0ac3efbf59efbdfdf15bd0ac99d3093dfa87d50748d4635aef563cd46f76cb"
-  },
-  {
-   "name": "NT-V3-Pre-8M / model.safetensors",
-   "path": "NTv3_8M_pre/model.safetensors",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 30787636,
-   "sha256": "b0527ab3880aac7c8bd19b2072ed1aabf36463d3473c153ed2d17630e3df165b"
-  },
-  {
-   "name": "NT-V3-Pre-8M / modeling_ntv3_pretrained.py",
-   "path": "NTv3_8M_pre/modeling_ntv3_pretrained.py",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 35193,
-   "sha256": "bc2157369fd9c73cc24323be8c38943871a2a7f1aaa1ca92a8945c1a65c4757a"
-  },
-  {
-   "name": "NT-V3-Pre-8M / README.md",
-   "path": "NTv3_8M_pre/README.md",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 6737,
-   "sha256": "454f6898c74385ba7db9f1ad228653a12d306983dd069ae63c74fc9eda06e588"
-  },
-  {
-   "name": "NT-V3-Pre-8M / special_tokens_map.json",
-   "path": "NTv3_8M_pre/special_tokens_map.json",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 149,
-   "sha256": "4f98fb3de0902c87821f2e518a9f808ea1ffe3810882e4d429758a55dfbff009"
-  },
-  {
-   "name": "NT-V3-Pre-8M / tokenization_ntv3.py",
-   "path": "NTv3_8M_pre/tokenization_ntv3.py",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 7851,
-   "sha256": "59e507620a65cebaab59e977c8f2840ff2f208f0f1a6ec38ece6b53cb3eebda3"
-  },
-  {
-   "name": "NT-V3-Pre-8M / tokenizer_config.json",
-   "path": "NTv3_8M_pre/tokenizer_config.json",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 1518,
-   "sha256": "e181beb2fbea58651a28b5bdc1d1bef7e83c64dc3b12ba15053a92c9c1c93bfd"
-  },
-  {
-   "name": "NT-V3-Pre-8M / upstream_config.json",
-   "path": "NTv3_8M_pre/upstream_config.json",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 1751,
-   "sha256": "ee1963ee2fa1f32a0b6eb5355bd38b88ff9c560b5be1bd637575bb44786149ec"
-  },
-  {
-   "name": "NT-V3-Pre-8M / upstream_tokenizer_config.json",
-   "path": "NTv3_8M_pre/upstream_tokenizer_config.json",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 1479,
-   "sha256": "07019b4b8964bc28c08c23bf1e1704a2dcdf686d1b99ad211008429b34d1d0fb"
-  },
-  {
-   "name": "NT-V3-Pre-8M / vocab.json",
-   "path": "NTv3_8M_pre/vocab.json",
-   "role": "frozen nucleotide encoder (deconv tower trainable)",
-   "source": "huggingface.co/InstaDeepAI/NTv3_8M_pre",
-   "revision": null,
-   "size_bytes": 138,
-   "sha256": "dafebcb0654e403cc30269f52bed31f07fd8c55a1370be63a54d82b917c61153"
+   "path": "out_eval/",
+   "role": "run_eval.sh predictions and detailed_results.json"
   }
  ]
 }
