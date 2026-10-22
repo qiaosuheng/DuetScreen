@@ -311,6 +311,10 @@ The seed-42 training-view cache and the complete ESM2 protein cache are archived
 toy archive (`DuetScreen_ToySubset.zip`), which already contains its own small view and protein
 caches.
 
+The cache also contains embeddings for the test/holdout sequences. This is not leakage: training only
+looks up sequences present in `variants_data.pkl`, and the extra keys are never read (see
+[Why a merged cache is not test-set leakage](#why-a-merged-cache-is-not-test-set-leakage)).
+
 Extract the protein cache from the first volume:
 
 ```bash
@@ -584,6 +588,33 @@ print(len(merged), "sequences")
 The released 979 MB cache is such a superset: it was built once from a combined record set and covers
 59,398 sequences (training views plus test/species/family cohorts). It is not the result of two runs
 merging themselves.
+
+### Why a merged cache is not test-set leakage
+
+A merged cache contains ESM2 embeddings for test/holdout sequences, but it is a **lookup table**, not
+a training set:
+
+- training iterates only the records stored in `variants_data.pkl` (train/val); each batch calls
+  `lookup(seqs)` for those sequences, and extra keys in the cache are never read;
+- the cache stores no labels, and ESM2-35M is frozen, so no gradient reaches it;
+- test/holdout FASTAs are used only by evaluation, and the trainer's leakage audit requires an
+  external test file and checks that it does not overlap the training split.
+
+A single merged cache is therefore safe and convenient: it does not expose test protein features to
+the training loop. Separate caches (train-only and test-only) are equally valid if you prefer that
+layout.
+
+You can verify the split directly:
+
+```python
+import pickle
+from Bio import SeqIO
+
+records = pickle.load(open("runs/full_seed42/variants_data.pkl", "rb"))
+train = {r["original_seq"].upper() for r in records}
+test = {str(r.seq).upper() for r in SeqIO.parse("data/mixed/test.fasta", "fasta")}
+print("overlap", len(train & test))      # expected: 0
+```
 
 ## Predict
 

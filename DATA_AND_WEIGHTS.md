@@ -64,6 +64,10 @@ runs/full_seed42/
 `assets_manifest.json` records the expected names and hashes for the encoder folder and, when
 present, the protein cache and checkpoints of a local run.
 
+The full protein cache is a frozen ESM2 lookup table and also contains test/holdout embeddings.
+Training reads only keys for sequences in `variants_data.pkl`; extra cache entries are never used,
+so this is not test-set leakage.
+
 ## Licence
 
 Code: MIT (`LICENSE`). Third-party components: see `THIRD_PARTY.md`. Dataset: CC BY 4.0 for
