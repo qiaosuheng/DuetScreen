@@ -31,6 +31,14 @@ fail() { printf 'FAIL: %s\n' "$*"; exit 1; }
 [ -d "$DATA" ] || fail "DATA=$DATA not found (needs train.fasta and val.fasta)"
 [ -f "$DATA/train.fasta" ] && [ -f "$DATA/val.fasta" ] || fail "$DATA must hold train.fasta and val.fasta"
 
+# The trainer requires at least one held-out FASTA for its leakage audit.
+EXTRA=()
+if [ -f "$DATA/test.fasta" ]; then
+  EXTRA+=(--external-test "test=/data/test.fasta")
+elif [ -f "$DATA/val.fasta" ]; then
+  EXTRA+=(--external-test "val=/data/val.fasta")
+fi
+
 if [ -z "${ASSETS:-}" ]; then
   for c in "$HERE/assets" "$HERE/../assets"; do
     [ -d "$c/NTv3_8M_pre" ] && ASSETS="$c" && break
@@ -55,7 +63,7 @@ fi
 
 say "2/3 protein cache coverage"
 COVER=(run --rm --entrypoint python -v "$WORK:/work:ro" -v "$ASSETS:/assets:ro" -v "$HERE/tools:/tools:ro")
-if "$DOCKER" "${COVER[@]}" "$IMAGE" /tools/check_cache_coverage.py \
+if [ -f "$ASSETS/protein_seg_cache_35m.pkl" ] && "$DOCKER" "${COVER[@]}" "$IMAGE" /tools/check_cache_coverage.py \
      --records /work/variants_data.pkl --cache /assets/protein_seg_cache_35m.pkl 2>/dev/null; then
   echo "    shipped protein cache covers the records"
 else
@@ -73,11 +81,12 @@ say "3/3 training (${EPOCHS} epochs, seed ${SEED})"
 CACHE_ENV=(-e DUETSCREEN_PROTEIN_SEG_CACHE=/assets/protein_seg_cache_35m.pkl)
 [ -n "${PROTEIN_CACHE:-}" ] && CACHE_ENV=(-e DUETSCREEN_PROTEIN_SEG_CACHE="$PROTEIN_CACHE")
 "$DOCKER" run --rm --gpus all \
-  -v "$WORK:/work" -v "$ASSETS:/assets:ro" \
+  -v "$WORK:/work" -v "$ASSETS:/assets:ro" -v "$DATA:/data:ro" \
   "${CACHE_ENV[@]}" "$IMAGE" \
   --records /work/variants_data.pkl --output-dir "/work/seed${SEED}" \
   --ntv3-model /assets/NTv3_8M_pre --seed "$SEED" \
   --epochs "$EPOCHS" --patience 5 --batch-size "$BATCH" --max-seq-len 2048 \
+  "${EXTRA[@]}" \
   || fail "training failed"
 
 say "DONE"

@@ -8,6 +8,9 @@
 # time; set CACHE=/path/to/protein_seg_cache_35m.pkl to reuse one.
 set -euo pipefail
 
+# Git Bash on Windows rewrites /container/paths into C:/... ; keep them literal.
+export MSYS_NO_PATHCONV=1 2>/dev/null || true
+
 IMAGE="${IMAGE:-duetscreen-release:1.0}"
 MODEL="${MODEL:-}"
 ASSETS="${ASSETS:-./assets}"

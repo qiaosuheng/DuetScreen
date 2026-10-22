@@ -24,7 +24,7 @@ import seaborn as sns
 from sklearn.metrics import (
     accuracy_score, f1_score, roc_auc_score, matthews_corrcoef,
     precision_score, recall_score, confusion_matrix, classification_report,
-    precision_recall_curve, roc_curve
+    precision_recall_curve, roc_curve, average_precision_score
 )
 
 # Import project modules
@@ -596,7 +596,7 @@ class SimpleNTv3Predictor:
                 }
                 
                 # Calculate AUPRC (Area Under Precision-Recall Curve)
-                metrics['auprc'] = _np_trapz(precision_curve, recall_curve)
+                metrics['auprc'] = average_precision_score(true_np, probs_np)
                 
             except:
                 metrics['auc'] = 0.0
@@ -774,7 +774,7 @@ class SimpleNTv3Predictor:
         if len(np.unique(labeled_true)) > 1:
             precision, recall, _ = precision_recall_curve(labeled_true, labeled_probs)
             # Calculate AUPRC
-            auprc = _np_trapz(precision, recall)
+            auprc = average_precision_score(labeled_true, labeled_probs)
             
             ax4.plot(recall, precision, color='darkgreen', lw=2, label=f'PR curve (AUPRC = {auprc:.3f})')
             ax4.set_xlabel('Recall')

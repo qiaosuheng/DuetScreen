@@ -7,6 +7,9 @@
 #   ./run_eval.sh
 set -euo pipefail
 
+# Git Bash on Windows rewrites /container/paths into C:/... ; keep them literal.
+export MSYS_NO_PATHCONV=1 2>/dev/null || true
+
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 IMAGE="${IMAGE:-duetscreen-release:1.0}"
 ASSETS="${ASSETS:-$HERE/assets}"
@@ -40,6 +43,16 @@ mkdir -p "$OUT"
   --ntv3-model /assets/NTv3_8M_pre \
   --output-dir /out --threshold "$THRESHOLD" --batch-size "$BATCH"
 
+RESULT="$OUT/detailed_results.json"
+if [ ! -f "$RESULT" ]; then
+  echo "FAIL: $RESULT was not written (prediction failed)"
+  exit 1
+fi
+if ! grep -q '"accuracy"' "$RESULT"; then
+  echo "FAIL: no metrics in $RESULT; check that the FASTA headers carry pos_/neg_ or |label:1 labels"
+  exit 1
+fi
+
 echo
-echo "Results: $OUT/detailed_results.json"
+echo "Results: $RESULT"
 echo "Predictions: $OUT/predictions_threshold_${THRESHOLD}.csv"

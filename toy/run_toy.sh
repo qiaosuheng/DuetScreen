@@ -6,6 +6,9 @@
 #   ASSETS=assets ./toy/run_toy.sh
 set -euo pipefail
 
+# Git Bash on Windows rewrites /container/paths into C:/... ; keep them literal.
+export MSYS_NO_PATHCONV=1 2>/dev/null || true
+
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$HERE/.." && pwd)"
 IMAGE="${IMAGE:-duetscreen-release:1.0}"

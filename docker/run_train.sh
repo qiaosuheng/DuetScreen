@@ -8,6 +8,9 @@
 #   SEED=43 EPOCHS=20 ./docker/run_train.sh
 set -euo pipefail
 
+# Git Bash on Windows rewrites /container/paths into C:/... ; keep them literal.
+export MSYS_NO_PATHCONV=1 2>/dev/null || true
+
 IMAGE="${IMAGE:-duetscreen-release:1.0}"
 ASSETS="${ASSETS:-./assets}"          # must contain NTv3_8M_pre/
 DATA="${DATA:-./data/mixed}"          # train.fasta / val.fasta
