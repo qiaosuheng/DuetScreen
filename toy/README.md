@@ -5,7 +5,8 @@ of training on the complete benchmark.
 
 The archive is distributed separately (`DuetScreen_ToySubset.zip`,
 https://doi.org/10.5281/zenodo.23538086). Unpack it into this folder so that `toy/data/` and
-`toy/cache/` exist.
+`toy/cache/` exist. It is self-contained: the full training caches
+(https://doi.org/10.5281/zenodo.23537662) are **not** needed for the toy workflow.
 
 Contents of the distributed archive (`DuetScreen_ToySubset.zip`):
 

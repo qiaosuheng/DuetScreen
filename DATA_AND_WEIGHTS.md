@@ -10,10 +10,15 @@ are produced locally by the training recipe.
 |---|---|
 | Benchmark dataset (mixed, strict, holdouts) | Zenodo: https://doi.org/10.5281/zenodo.23534656 |
 | Seed-42 checkpoint and NT-V3 encoder | Zenodo: https://doi.org/10.5281/zenodo.23535423 |
+| Full training views and protein cache | Zenodo: https://doi.org/10.5281/zenodo.23537662 |
 | Toy validation subset (120/40/40 + caches) | Zenodo: https://doi.org/10.5281/zenodo.23538086 |
 | Nucleotide encoder | `NTv3_8M_pre.zip` in the checkpoint record, or `InstaDeepAI/NTv3_8M_pre` on Hugging Face |
 | Protein encoder | Hugging Face: `facebook/esm2_t12_35M_UR50D` (downloaded automatically) |
 | Additional checkpoints | produced locally by `run_full_training.sh` |
+
+Full training requires both the training-view cache (`variants_data_seed42.pkl`) and the extracted
+protein cache (`protein_seg_cache_35m.pkl`, 32 seven-zipped volumes). The toy archive is
+self-contained and does not depend on either of them.
 
 ## Dataset layout after download
 

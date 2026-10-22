@@ -22,6 +22,7 @@ expressed, viable or functional.
 - [Project layout after setup](#project-layout-after-setup)
 - [Data availability](#data-availability)
 - [Model weights](#model-weights)
+- [Full training caches](#full-training-caches)
 - [Environment](#environment)
 - [Quickstart](#quickstart)
 - [Toy validation (1 epoch)](#toy-validation-1-epoch)
@@ -155,6 +156,39 @@ Unpack `NTv3_8M_pre.zip` to `assets/NTv3_8M_pre` and pass the checkpoint to pred
 `--model`. Training writes its own checkpoint to `runs/full_seed<ID>/seed<ID>/`; the released
 seed-42 checkpoint can be used for prediction or as a starting point.
 
+## Full training caches
+
+The seed-42 training-view cache and the complete ESM2 protein cache are archived at
+**https://doi.org/10.5281/zenodo.23537662**:
+
+| File | Contents |
+|---|---|
+| `variants_data_seed42.pkl` | full training-view cache built with `build_cache --seed 42` (16,738 records) |
+| `protein_seg_cache_35m.7z.001` … `.032` | 16-segment ESM2-35M cache, split into 32 volumes (about 820 MB compressed, 979 MB extracted) |
+
+**Full training needs both files.** The toy workflow does **not** use this record: it only needs the
+toy archive (`DuetScreen_ToySubset.zip`), which already contains its own small view and protein
+caches.
+
+Extract the protein cache from the first volume:
+
+```bash
+7z x protein_seg_cache_35m.7z.001 -o./caches     # Linux / macOS (p7zip)
+# Windows: 7-Zip -> Extract Here on protein_seg_cache_35m.7z.001
+```
+
+Place the extracted cache and the training views where `run_full_training.sh` looks for them:
+
+```
+assets/
+  protein_seg_cache_35m.pkl        extracted from the 7z volumes
+runs/
+  full_seed42/
+    variants_data.pkl              renamed from variants_data_seed42.pkl
+```
+
+`DATA=data/mixed ./run_full_training.sh` then reuses both caches instead of rebuilding them.
+
 ## Environment
 
 Two paths use the same code. The Docker path pins the CUDA/torch/Mamba combination and is the
@@ -251,8 +285,9 @@ condition. Rebuilding a cache with this module reproduces rows to fp16 precision
 ## Toy validation (1 epoch)
 
 A fixed 120/40/40 subset with precomputed training views and protein cache is distributed
-separately (`DuetScreen_ToySubset.zip`, https://doi.org/10.5281/zenodo.23538086). Unpack it into `toy/` so
-that `toy/data/` and `toy/cache/` exist, then run:
+separately (`DuetScreen_ToySubset.zip`, https://doi.org/10.5281/zenodo.23538086). The toy archive is
+self-contained: it does **not** require the full cache record. Unpack it into `toy/` so that
+`toy/data/` and `toy/cache/` exist, then run:
 
 ```bash
 ASSETS=assets ./toy/run_toy.sh
