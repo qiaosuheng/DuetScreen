@@ -24,6 +24,7 @@ expressed, viable or functional.
 - [Data availability](#data-availability)
 - [Model weights](#model-weights)
 - [Full training caches](#full-training-caches)
+- [Build the protein cache (ESM2-35M)](#build-the-protein-cache-esm2-35m)
 - [Environment](#environment)
 - [Quickstart](#quickstart)
 - [Toy validation (1 epoch)](#toy-validation-1-epoch)
@@ -501,22 +502,66 @@ one-step `--smoke` check; the full recipe expects the complete split.
 `assets_manifest.json` records the expected file names and SHA-256 values for the
 encoder folder and, when present, the protein cache and checkpoints of a local run.
 
-## Build the protein cache
+## Build the protein cache (ESM2-35M)
 
-The protein channel reads a cache of 16-segment ESM2-35M embeddings keyed by DNA
-sequence. `run_full_training.sh` builds it when absent; rebuild it explicitly only
-for new record sets (GPU recommended):
+The protein branch is frozen: each DNA record is translated, the stop-free ORF is split into 16
+segments, and ESM2-35M produces one 480-dimensional vector per segment. The cache stores these
+vectors keyed by the **exact DNA sequence**. Because the key is the sequence, the cache must be built
+from the same sequences that will be trained or scored, including augmented training views.
+
+`run_full_training.sh` builds the cache automatically when it is absent. Build it manually when you
+bring new data, or when you want to reuse a cache across runs.
+
+### For training (views included)
+
+```bash
+# 1) build the supervised training views from your train/val split
+python -m duetscreen.build_cache \
+    --train-fasta data/mixed/train.fasta --val-fasta data/mixed/val.fasta \
+    --output runs/full_seed42/variants_data.pkl --seed 42
+
+# 2) embed every sequence in that view cache (originals + semantic/confusion views)
+python -m duetscreen.protein_cache \
+    --input  runs/full_seed42/variants_data.pkl \
+    --output runs/full_seed42/protein_seg_cache.pkl \
+    --esm2   facebook/esm2_t12_35M_UR50D \
+    --device cuda --batch-size 16
+
+# 3) point the trainer at it
+export DUETSCREEN_PROTEIN_SEG_CACHE=$PWD/runs/full_seed42/protein_seg_cache.pkl
+```
+
+Passing `variants_data.pkl` (not just the FASTA) is important: views generated with another seed are
+different sequences and will miss the cache.
+
+### For new FASTA (inference)
 
 ```bash
 python -m duetscreen.protein_cache \
-    --input  records.fasta \
-    --output protein_seg_cache_35m.pkl \
-    --esm2   /assets/esm2_t12_35M_UR50D   # or facebook/esm2_t12_35M_UR50D
-export DUETSCREEN_PROTEIN_SEG_CACHE=$PWD/protein_seg_cache_35m.pkl
+    --input  new_records.fasta \
+    --output protein_seg_cache_new.pkl \
+    --esm2   facebook/esm2_t12_35M_UR50D \
+    --device cuda --batch-size 16
+
+export DUETSCREEN_PROTEIN_SEG_CACHE=$PWD/protein_seg_cache_new.pkl
 ```
 
-Records without a stop-free interval of at least 30 nt receive a zero vector;
-the projection learns a "no protein channel" bias from that case.
+`--esm2` accepts a Hugging Face ID (downloaded on first use) or a local folder for offline runs.
+ESM2-35M is public and does not require a token. On one modern GPU this takes seconds for tens of
+sequences, minutes for thousands, and a few hours for the full seed-42 view set (~59k sequences).
+Records without a stop-free interval of at least 30 nt receive a zero vector; the projection learns a
+"no protein channel" bias from that case.
+
+### Check coverage before training
+
+```bash
+python tools/check_cache_coverage.py \
+  --records runs/full_seed42/variants_data.pkl \
+  --cache   runs/full_seed42/protein_seg_cache.pkl
+```
+
+`missing=0` means the cache covers every training view. The prebuilt cache for the released split is
+available at https://doi.org/10.5281/zenodo.23537662 if you do not want to rebuild it.
 
 ## Predict
 
