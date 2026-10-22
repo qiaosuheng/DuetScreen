@@ -324,6 +324,10 @@ Unpack `NTv3_8M_pre.zip` to `assets/NTv3_8M_pre` and pass the checkpoint to pred
 `--model`. Training writes its own checkpoint to `runs/full_seed<ID>/seed<ID>/`; the released
 seed-42 checkpoint can be used for prediction or as a starting point.
 
+**Only the seed-42 checkpoint is public.** The paper trained seeds 42–51; checkpoints 43–51 are not
+part of this weight record. The record licence is CC BY 4.0 for the author-created checkpoint; the
+NT-V3 weights retain their upstream terms (see `THIRD_PARTY.md`).
+
 ## Full training caches
 
 The shared training-view cache (generated with seed 42) and the complete ESM2 protein cache are
