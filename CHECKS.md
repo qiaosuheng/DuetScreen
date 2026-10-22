@@ -1,6 +1,6 @@
 # Release validation and verification scope
 
-Documentation revision: 2026-10-22 (release tag `v1.0.29`). The execution records
+Documentation revision: 2026-10-22 (release tag `v1.0.30`). The execution records
 quoted below were produced on 2026-10-17 with the release build of that date. They
 were **not** re-executed for this documentation revision; treat them as historical
 evidence, not as a fresh validation of the current commit.

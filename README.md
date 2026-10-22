@@ -67,8 +67,9 @@ training is not a validated path. `bash` blocks target Linux, WSL2 or Git Bash;
 
 ## Full training: download → train → metrics
 
-This section is the **full-training path only**. The toy demo and prediction with the released
-checkpoint do not require the dataset, the caches or a training run; use the entries above for those.
+This section describes the **full-training path only**. For the toy demo or prediction with the
+released checkpoint, follow the separate entries above; their resource requirements are listed in
+the corresponding guides.
 
 Every command below is run from the repository root, i.e. the directory that contains
 `run_full_training.sh`, `run_eval.sh` and `Dockerfile`. Scripts are **not** installed globally and
@@ -111,7 +112,7 @@ cd DuetScreen
 | `variants_data_seed42.pkl` | https://doi.org/10.5281/zenodo.23537662 | rename to `runs/shared/variants_data.pkl` |
 | `protein_seg_cache_35m.7z.001–032` | https://doi.org/10.5281/zenodo.23537662 | extract → `assets/protein_seg_cache_35m.pkl` |
 | `best_nucleotide_v3_mamba_model.pth` (optional) | https://doi.org/10.5281/zenodo.23535423 | `assets/checkpoints/seed42/best_nucleotide_v3_mamba_model.pth` |
-| `DuetScreen_ToySubset.zip` (optional toy) | https://doi.org/10.5281/zenodo.23538086 | unzip into `toy/` |
+| `DuetScreen_ToySubset.zip` (optional toy) | https://doi.org/10.5281/zenodo.23538086 | Extract only `data/` and `cache/` into `toy/`; follow [the toy installation guide](toy/README.md#install-the-resources). |
 
 ```bash
 mkdir -p assets data/mixed runs/shared assets/checkpoints/seed42
@@ -229,7 +230,7 @@ it with `powershell -ExecutionPolicy Bypass -File .\toy\run_toy.ps1 -Assets asse
 - `configs/duetscreen_release.json`: the configuration used for the reported runs.
 - `docker/`: container entry points for training, smoke training and prediction.
 - `tools/`: cache-coverage and result-verification utilities.
-- `toy/`: one-epoch toy workflow; `toy/data/` and `toy/cache/` are created after unpacking the toy archive.
+- `toy/`: one-epoch toy workflow; `toy/data/` and `toy/cache/` are created after extracting the toy resources.
 - `Dockerfile`, `requirements.txt`: pinned environment.
 - `docs/`: setup and troubleshooting notes.
 
@@ -261,11 +262,11 @@ DuetScreen/
 │   ├── run_toy.sh
 │   ├── run_toy.ps1
 │   ├── expected_metrics.json
-│   ├── data/                    after unpacking DuetScreen_ToySubset.zip
+│   ├── data/                    extracted from DuetScreen_ToySubset.zip
 │   │   ├── train_toy.fasta
 │   │   ├── val_toy.fasta
 │   │   └── test_toy.fasta
-│   └── cache/                   after unpacking DuetScreen_ToySubset.zip
+│   └── cache/                   extracted from DuetScreen_ToySubset.zip
 │       ├── variants_data_toy.pkl
 │       └── protein_seg_cache_toy.pkl
 ├── assets/
@@ -290,10 +291,10 @@ DuetScreen/
 The Docker image `duetscreen-release:1.0` is built once from the repository root; no other local
 state is required. `runs/` is created by the training script and is not tracked by git.
 
-`toy/data/` and `toy/cache/` are not tracked in git: unpack
-`DuetScreen_ToySubset.zip` (https://doi.org/10.5281/zenodo.23538086) directly into `toy/`. The
-archive already contains the `data/` and `cache/` folders, and `toy/run_toy.sh` writes its outputs to
-`toy/out/`.
+`toy/data/` and `toy/cache/` are not tracked in git. Extract only `data/` and `cache/` from
+`DuetScreen_ToySubset.zip` (https://doi.org/10.5281/zenodo.23538086) into `toy/`, following
+[the toy installation guide](toy/README.md#install-the-resources). Keep the repository versions of
+the scripts and documentation. The toy outputs are written to `toy/out/`.
 
 ## Data availability
 
@@ -689,8 +690,9 @@ print("overlap", len(train & test))      # expected: 0
 
 ## Predict with the released checkpoint
 
-This entry scores sequences with the public seed-42 model. It does **not** require the benchmark
-dataset, a cache build or any training run.
+This entry scores sequences with the public seed-42 model **without retraining**. The released
+protein cache can be reused for inputs it covers; coverage of arbitrary new input sequences is not
+guaranteed.
 
 ### Required files and default placement
 
