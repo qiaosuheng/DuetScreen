@@ -117,10 +117,20 @@ is independent and contains its own `toy/data/` and `toy/cache/`.
 docker build -t duetscreen-release:1.0 .
 ```
 
+Run this **from the repository root** (the folder that contains `Dockerfile`). The trailing `.` is the
+build context, and Docker automatically reads `./Dockerfile` from that context; you do **not** pass
+the file name explicitly. `-t duetscreen-release:1.0` names the image, and the training/evaluation
+scripts expect exactly that name. To build from another directory:
+
+```bash
+docker build -f /path/to/DuetScreen/Dockerfile -t duetscreen-release:1.0 /path/to/DuetScreen
+```
+
 The `Dockerfile` **is** the environment configuration: it pins Python 3.11, PyTorch 2.8.0 with
 CUDA 12.8, transformers 4.57.1 and compiles `mamba-ssm 2.2.6.post3` / `causal-conv1d 1.5.3.post1`.
 You do not need to edit it; build it once (about 20 minutes the first time) and reuse the image for
-training and evaluation.
+training and evaluation. It is only used at build time; running training or prediction does not
+reference the file.
 
 `./run_quickstart.sh` is an optional environment check; it builds the same image and verifies the
 import. It is not required before training.
