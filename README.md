@@ -18,6 +18,7 @@ expressed, viable or functional.
 ## Table of contents
 
 - [Architecture](#architecture)
+- [First-time setup: download → train → metrics](#first-time-setup-download--train--metrics)
 - [What is included](#what-is-included)
 - [Project layout after setup](#project-layout-after-setup)
 - [Data availability](#data-availability)
@@ -45,9 +46,112 @@ stream (adapted NT-V3, state-space and convolution branches, token fusion) and t
 fused into a joint representation, followed by the classification head and the training-only
 contrastive projection.
 
+## First-time setup: download → train → metrics
+
+Every command below is run from the repository root, i.e. the directory that contains
+`run_full_training.sh`, `run_eval.sh` and `Dockerfile`. Scripts are **not** installed globally and
+are **not** on `PATH`; call them with their relative path (`./run_full_training.sh`) from that
+directory.
+
+### 1. Clone
+
+```bash
+git clone https://github.com/qiaosuheng/DuetScreen.git
+cd DuetScreen
+```
+
+### 2. Download and place the files
+
+| Download | From | Put it at |
+|---|---|---|
+| `NTv3_8M_pre.zip` | https://doi.org/10.5281/zenodo.23535423 | unzip into `assets/` → `assets/NTv3_8M_pre/` |
+| `mixed pool.zip` | https://doi.org/10.5281/zenodo.23534656 | unzip into `data/mixed/` → `train.fasta`, `val.fasta`, `test.fasta` |
+| `variants_data_seed42.pkl` | https://doi.org/10.5281/zenodo.23537662 | rename to `runs/full_seed42/variants_data.pkl` |
+| `protein_seg_cache_35m.7z.001–032` | https://doi.org/10.5281/zenodo.23537662 | extract → `assets/protein_seg_cache_35m.pkl` |
+| `best_nucleotide_v3_mamba_model.pth` (optional) | https://doi.org/10.5281/zenodo.23535423 | `assets/checkpoints/seed42/best_nucleotide_v3_mamba_model.pth` |
+| `DuetScreen_ToySubset.zip` (optional toy) | https://doi.org/10.5281/zenodo.23538086 | unzip into `toy/` |
+
+```bash
+mkdir -p assets data/mixed runs/full_seed42 assets/checkpoints/seed42
+
+# nucleotide encoder
+wget -O /tmp/NTv3_8M_pre.zip "https://zenodo.org/records/23535423/files/NTv3_8M_pre.zip?download=1"
+unzip -o /tmp/NTv3_8M_pre.zip -d assets/
+
+# benchmark split
+wget -O /tmp/mixed_pool.zip "https://zenodo.org/records/23534656/files/mixed%20pool.zip?download=1"
+unzip -o /tmp/mixed_pool.zip -d data/mixed
+
+# full training caches (optional if you let the training script rebuild them)
+wget -O runs/full_seed42/variants_data.pkl \
+  "https://zenodo.org/records/23537662/files/variants_data_seed42.pkl?download=1"
+# protein cache: download all 32 volumes, then
+7z x protein_seg_cache_35m.7z.001 -oassets/
+```
+
+The two caches in record `23537662` are a matched pair. **Full training needs both.** The toy archive
+is independent and contains its own `toy/data/` and `toy/cache/`.
+
+### 3. Build the image once
+
+```bash
+docker build -t duetscreen-release:1.0 .
+```
+
+`./run_quickstart.sh` is an optional environment check; it builds the same image and verifies the
+import. It is not required before training.
+
+### 4. Train
+
+```bash
+DATA=data/mixed ./run_full_training.sh
+```
+
+The script is at the repository root. It builds `runs/full_seed42/variants_data.pkl` and
+`runs/full_seed42/protein_seg_cache.pkl` when they are absent (several hours), or reuses the files
+placed in step 2. The checkpoint is written to
+`runs/full_seed42/seed42/best_nucleotide_v3_mamba_model.pth`.
+
+### 5. Evaluate and print metrics
+
+```bash
+MODEL=runs/full_seed42/seed42/best_nucleotide_v3_mamba_model.pth \
+DATA=data/mixed/test.fasta \
+CACHE=assets/protein_seg_cache_35m.pkl \
+./run_eval.sh
+```
+
+`run_eval.sh` is at the repository root. It prints accuracy, F1, precision, recall, AUROC and AUPRC,
+and writes `out_eval/detailed_results.json` plus `out_eval/predictions_threshold_0.5.csv`. If you
+did not download the full protein cache, use the one produced by training:
+`CACHE=runs/full_seed42/protein_seg_cache.pkl`.
+
+### 6. Optional: toy check (about two minutes)
+
+```bash
+unzip -o DuetScreen_ToySubset.zip -d toy/
+ASSETS=assets ./toy/run_toy.sh
+```
+
+`toy/run_toy.sh` lives in the `toy/` subdirectory and needs no full cache. The source tree contains
+only `toy/run_toy.sh`; `toy/data/` and `toy/cache/` appear after unpacking the toy archive.
+
+### Where the scripts live
+
+| Script | Directory | Purpose |
+|---|---|---|
+| `run_quickstart.sh` | repository root | optional Docker / encoder / import check |
+| `run_full_training.sh` | repository root | one-command training on `DATA=data/mixed` |
+| `run_eval.sh` | repository root | one-command prediction + ACC/F1/AUROC |
+| `run_eval.ps1` | repository root | Windows version of the evaluation wrapper |
+| `toy/run_toy.sh` | `toy/` | one-epoch toy training + prediction |
+| `docker/run_train.sh` | `docker/` | container wrapper for training |
+| `docker/run_predict.sh` | `docker/` | container wrapper for prediction |
+
 ## What is included
 
 - `duetscreen/`: model, encoder, data pipeline, training-view generator, protein cache, trainer and prediction CLI.
+- `run_full_training.sh`, `run_eval.sh`, `run_quickstart.sh` (repository root): one-command training, evaluation and environment check.
 - `configs/duetscreen_release.json`: the configuration used for the reported runs.
 - `docker/`: container entry points for training, smoke training and prediction.
 - `tools/`: cache-coverage and result-verification utilities.
@@ -76,6 +180,8 @@ DuetScreen/
 ├── requirements.txt
 ├── run_full_training.sh
 ├── run_quickstart.sh
+├── run_eval.sh
+├── run_eval.ps1
 ├── toy/
 │   ├── README.md
 │   ├── run_toy.sh
@@ -401,6 +507,10 @@ python -m duetscreen.predict --fasta records.fasta \
   --model runs/full_seed42/seed42/best_nucleotide_v3_mamba_model.pth \
   --ntv3-model assets/NTv3_8M_pre --output-dir out --threshold 0.5
 ```
+
+For a labelled test FASTA, `./run_eval.sh` at the repository root wraps this call and prints
+accuracy, F1, AUROC and AUPRC; see **First-time setup** for the required `MODEL`, `DATA` and `CACHE`
+variables.
 
 Outputs per-record scores plus a metrics block when labels are present in the
 FASTA headers (`|label:1` / `|label:0`).

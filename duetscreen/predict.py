@@ -52,7 +52,14 @@ class SimpleSequenceTypeDetector:
             return None
         
         desc_lower = description.lower()
-        
+
+        # Record-ID prefixes used by the released benchmark (pos_0000123 / neg_0000456)
+        head = desc_lower.split('|')[0].strip()
+        if head.startswith(('pos_', 'pos-', 'pos.', 'positive_')):
+            return 1
+        if head.startswith(('neg_', 'neg-', 'neg.', 'negative_')):
+            return 0
+
         # Check for pipe separator
         if '|' in desc_lower:
             parts = desc_lower.split('|')
